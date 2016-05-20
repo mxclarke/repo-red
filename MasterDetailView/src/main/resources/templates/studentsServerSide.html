@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+
+<title>Spring Boot with Datatables</title>
+
+<!--/*/ <th:block th:include="fragments/headerincludes :: head"></th:block> /*/-->
+
+</head>
+<body>
+
+	<!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
+
+	<section class="mxcContainer">
+		<div class="mxcDevNotes">Current file: studentsServerSide.html.</div>
+
+		<!-- Spring security implements CSRF protection by default. IF your client posts to -->
+		<!-- your Spring server without handling this, it will receive a 403 Forbidden response. -->
+		<!-- Your client needs to a) store the CSRF token that the server sends to it in the -->
+		<!-- first place (see the hidden field below), b) send that token back on an AJAX -->
+		<!-- request (see the Javascript). -->
+		<input type="hidden" th:name="${_csrf.parameterName}"
+			th:value="${_csrf.token}" />
+
+		<h2 th:text="${'Campus: ' + campus}">Campus placeholder</h2>
+
+		<section class="mxcMaster">
+
+			<h4>Student list with paged, ordered and filtered server-side
+				data</h4>
+				
+			<!-- Insert the datatable. The display class is a shorthand for stripe,  -->
+			<!-- hover, row-border and order-column.  -->
+			<!-- The cell-border class will provide a border around each cell. -->
+			<!-- A real app would have additional optional columns, and would use a -->
+			<!-- hidden column for a unique ID to be used for selection and CRUD operations. -->
+			<table id="example" class="display cell-border"></table>
+			
+		</section>
+
+		<!-- The detail section displays the currently selected student.  -->
+		<!-- Obviously, there would be much more actual detail in a real app, and -->
+		<!-- would be suitably blanked out when no student is selected. -->
+		<h4>Selected Student</h4>
+		<section id="exampleDetail" class="mxcDetail" title="Current Student">
+			<div class="mxcKeyDetail mxcSharedDetail">
+				<div>Student name:</div>
+				<div>Is Student External?</div>
+			</div>
+			<div class="mxcValueDetail mxcSharedDetail">
+				<div>
+					<span id="studentName"></span>
+				</div>
+				<div>
+					<span id="studentExternal"></span>
+				</div>
+			</div>
+		</section>
+	</section>
+
+	<!--/*/ <th:block th:include="fragments/footer :: footer"></th:block> /*/-->
+	
+</body>
+
+<script th:inline="javascript">
+
+(function() { // Begin scoping function
+	
+	// This variable allows us to keep track of the selected item, which Datatables
+	// discards on redraw. Note that, since this is a master-detail page, we are
+	// implementing single selection only.
+	var selectedIdx = "";  // Nothing selected at first
+	
+	$(document).ready(function() {
+		
+		// The columns that the table will display of the incoming data, with
+		// titles provided for the table header.
+		var dataColumns = [
+		    	        	{ data: "studentId", title: "Id" },
+		    	        	{ data: "firstName", title: "First Name" },
+		    	        	{ data: "lastName", title: "Last Name" },
+		    	        	{ data: "external", title: "External?" }
+		                   ];
+		
+		// Multi-column search setup - add the table footer and a text input to each footer cell
+		/*<![CDATA[*/
+		var htmlStr = "<tfoot><tr>";
+		for (i = 0; i < dataColumns.length; i++) {
+			var title = dataColumns[i].title;
+			var thContent = "<input type='text' placeholder='Search " + title + "' />";
+			htmlStr = htmlStr.concat("<th>",thContent,"</th>");
+		}
+		htmlStr = htmlStr.concat("</tr></tfoot>");
+		$("#example").append(htmlStr);
+	
+		// Capture the server-supplied CSRF token, which you can then return on a POST
+		// request from this page (Spring security).
+		var csrfToken = /*[[${_csrf.token}]]*/ null;
+		/*]]>*/
+		
+		// Set up your JQuery Datatable.
+		var table = $("#example").DataTable( {
+	        	"columns": dataColumns,
+			 	"dom": "lrtip",  // display everything except the default search box
+			 	"orderClasses": false, // don't highlight ordered column (interferes with selection)
+		        "serverSide": true,
+		        "processing": true,
+		        "ajax": {
+		            url: "/students/getPagedStudents",
+		            type: "POST",
+		            beforeSend: function (request) {
+		                request.setRequestHeader("X-CSRF-TOKEN", csrfToken);
+		            },
+		            contentType: "application/json",
+		            data: function( args ) {
+		            	return JSON.stringify(args);
+		            }
+		        }
+		    } );
+		
+	    // Apply the search
+	    table.columns().every( function () {
+	        var that = this;
+	 
+	        $( "input", this.footer() ).on( "keyup change", function () {
+	            if ( that.search() !== this.value ) {
+	                that.search( this.value ).draw();
+	            }
+	        } );
+	    } );
+	    
+	    // When the user clicks on a row, that row becomes selected and the detail
+	    // pane is updated.
+		 $("#example tbody").on("click", "tr", function(event) {
+		        var data = table.row( this ).data();
+		        onStudentSelect(data, event);
+		    } );
+		 
+	    // Reapply any selection when table is redrawn.
+		table.on( "draw.dt", function () {
+			onDraw(table);
+		} );
+	} );
+  
+	/**
+	* @desc Callback function for when the table is redrawn, which occurs whenever
+	* the user chooses a new page size, another page, sort or search criteria.
+	* Reapplies the selected row, if any.
+	* Datatables destroys and recreates the rows on redraw (next page, filter,
+	* sort etc), so you need to track any selection and reapply it.
+	* The select extension is supposed to make this easier (webjar datatables.net-select)
+	* but I could not get it to work properly for single selection and didn't
+	* want to spend any more time on it.
+	* @param table the JQuery Datatable that is being redrawn
+	*/
+	function onDraw(table) {
+		
+		// If a row is meant to be selected, and it's visible, make it so.
+		if ( selectedIdx !== "") {
+			// There should be only one, but we can generalise it for multiple selection.
+			// Add the 'row-selected' class to any rows in the visible table whose
+			// contents match the criteria.
+			$("#example td:first-child").filter(function() {
+					return cellMatchesSelection($(this).html());
+			}).parent().addClass("row-selected");
+		}
+	}
+	
+	/**
+	* @desc Helper function for single selection of table rows, which can be 
+	* modified for multiple selection.
+	* @return true if the given text of a single cell matches that of the
+	* stored selected row, selectedIdx, otherwise false.
+	*/
+	function cellMatchesSelection(cellText) {
+		return cellText === selectedIdx;
+	}
+	
+	/**
+	* @desc Callback for row selection, which highlights the selected row and
+	* populates the details panel.
+	* @param student currently selected Student object
+	* @param event click event on the table cell ('td')
+	*/
+	function onStudentSelect(student, event) {
+
+		// Highlight the selected row. Table is single select, so any previously
+		// selected rows must have highlighting removed.
+		// Find the row ('tr') which is the parent of the cell.
+		var theRow = $(event.target).parent();
+		// Remove highlighting on any previously selected rows.
+		$("#example tr").removeClass("row-selected");
+		// Add highlighting to this row.
+		theRow.addClass("row-selected");
+		
+		// Capture the selected element -- Datatables destroys and recreates
+		// the rows on redraw, so you need to track it yourself.
+		selectedIdx = student.studentId;
+		//var table = $("#example"); // html dom obj is table[0]
+		   
+		var fullName = student.firstName + " " + student.lastName;
+	    var isStudentExternal = student.external;
+	    
+	    // Update the detail panel.
+	    document.getElementById("studentName").textContent = fullName;
+	    document.getElementById("studentExternal").textContent = isStudentExternal ? "Yes" : "No";
+	}
+})();         // End scoping function
+
+</script>
+
+</html>

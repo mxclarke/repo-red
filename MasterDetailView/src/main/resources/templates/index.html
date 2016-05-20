@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+
+<title>Spring, Thymeleaf and JQuery Datatables</title>
+
+<!--/*/ <th:block th:include="fragments/headerincludes :: head"></th:block> /*/-->
+
+</head>
+<body>
+	<!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
+
+	<section class="mxcContainer">
+		<div class="mxcDevNotes">
+			<p>Current file: index.html.</p>
+		</div>
+
+		<p th:text="#{home.welcome}">Welcome text.</p>
+
+		<p>This page is actually a placeholder for a login screen I'm
+			hoping to build. To get to the real demo, click the button.</p>
+
+		<div class="mxcMainButton">
+			<a th:href="@{/students/serverside-data}">The real thing</a>
+		</div>
+
+	</section>
+
+	<!--/*/ <th:block th:include="fragments/footer :: footer"></th:block> /*/-->
+
+</body>
+
+<script>
+  $(function() {
+    $( "input[type=submit], a, button" )
+      .button();
+  });
+  </script>
+</html>

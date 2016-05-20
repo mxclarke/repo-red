@@ -1,0 +1,113 @@
+/* Stylesheet for Master Detail Paging app */
+
+/* Every main section will have a dark blue border, 10px margin with slightly more for
+   the bottom, and 10px padding. The background colour is white. . . .
+ */
+header, footer, .mxcContainer {
+	border: 1px solid DarkBlue;
+	margin: 10px;
+	margin-bottom: 15px;
+	padding: 10px;
+	background-color: white;
+}
+/* . . . except for the header and footer, whose backgrounds will be dark blue with
+   white text, and whose bottom margins will be 10px.
+*/
+header, footer {
+	margin-bottom: 10px;
+	color: white;
+	background-color: DarkBlue;
+}
+/* The main heading will be centred. */
+header {
+	text-align: center;
+}
+/* The following helps us get the border sticking to the bottom of the page, even if
+   there's not much content.
+*/
+html, body {
+	height: 100%;
+	margin: 0;
+}
+
+section {
+	min-height: -webkit-calc(100% - 100px); /* Chrome */
+	min-height: -moz-calc(100% - 100px); /* Firefox */
+	min-height: calc(100% - 100px); /* native */
+}
+
+footer {
+	font-size: 0.75em;
+	font-style: italic;
+	text-align: right;
+	position: relative;
+	clear: both;
+}
+/* Centre the main button on the index page using CSS3 flexbox. */
+.mxcMainButton {
+	display: -webkit-flex; /* Safari */
+	display: flex;
+	-webkit-justify-content: center; /* Safari 6.1+ */
+	justify-content: center;
+	padding: 10px;
+	color: DarkBlue;
+}
+/* Override JQuery button settings. */
+.ui-button {
+	color: red;
+}
+/* Developer notes can be hidden for production. */
+.mxcDevNotes {
+	font-size: 0.75em;
+	font-style: italic;
+	display: none;
+}
+
+h4 {
+	color: DarkBlue;
+}
+/* This section holds the JQuery Datatable grid. */
+section.mxcMaster {
+	
+}
+
+/* The grid itself. */
+#example_wrapper {
+	padding-top: 20px;
+}
+
+/* mxcDetail class is just a container for other divs, and holds the content for
+	a selected student.
+*/
+section.mxcDetail {
+	background-color: #e6e6e6;
+	color: DarkBlue;
+	overflow: hidden;
+}
+/* mxcSharedDetail is shared between keyDetail and valueDetail */
+div.mxcSharedDetail {
+	margin: 5px 0px;
+	line-height: 30px;
+	float: left;
+	overflow: hidden;
+}
+
+div.mxcKeyDetail {
+	margin-left: 20px;
+}
+
+div.mxcValueDetail {
+	margin-left: 20px;
+}
+
+/* Colour for the selected row of student */
+.row-selected {
+	background-color: #e6e6e6 !important;
+}
+
+/* Styling for the table filtering on each column */
+tfoot input {
+	width: 100%;
+	padding: 3px;
+	box-sizing: border-box;
+}
