@@ -55,9 +55,9 @@ To do this, check the path of your JDK and add something like this to your eclip
 C:\Program Files\Java\jdk1.8.0_77\bin\javaw.exe
 ```
 
-The -vm option must occur before the -vmargs option. Then restart Eclipse.
+The -vm option must occur before the -vmargs option. Once you have done this, restart Eclipse.
 
-Once you've done this, you should be able to build and run the app as described above.
+You should now be able to build and run the app as described above.
 However, should you be harbouring a burning desire to understand what is going on 
 in the POM, or else find that things are not working as advertised, keep reading.
 
@@ -66,21 +66,19 @@ classes, such as QEmployee from an entity Employee, and so on. To do this:
 
 - add your Querydsl dependencies
 - add a plugin to the POM's _build_ section with instructions to generate the metamodel
-classes to target/generated-sources/apt (don't commit these generated files, but since
-you've already got the target directory in your .gitignore file, that shouldn't happen)
-- add another build plugin, build-helper-maven-plugin, to tell Maven that there's another 
+classes to target/generated-sources/apt (don't commit these generated files, and as 
+you can see this project already has the target directory in its .gitignore file)
+- add another build plugin, _build-helper-maven-plugin_, to tell Maven that there's another 
 source directory in the mix, so that those classes will be compiled
 
 And that should be enough. . . .
 
 But wait -- there's more! Naturally, there's a problem in m2e. See
 the comments in this project's POM for what to do next. If you're using IntellJ, with
-any luck you won't have to do that for your own projects. Happily, you don't
-have to do any of that in this project because the POM has already been
-doctored accordingly.
+any luck you won't have to do that for your own projects. In this project, the POM has already been doctored.
 
 If your metadata classes disappear on you again for no apparent reason (e.g. this happened 
-at one stage while I was happily and innocently typing in code, despite the fact that
+at one stage while I was innocently typing in code, despite the fact that
 I'm pretty sure I had switched off automatic Maven builds):
 
 - comment out anything that doesn't compile
@@ -105,11 +103,7 @@ All Spring projects should be using this. I am indebted to
 for getting me started with Spring Boot.
 - I am new to [Thymeleaf](http://www.thymeleaf.org/), and have only used a small subset of its features
 so far. From what I've seen, it seems to be stable and an excellent replacement for JSPs.
-- Querydsl's dynamic query model requires code generation for the domain metadata 
-classes. Since this is a complicating factor, for my part, the jury (a bunch of strange
-voices in my head) is still out as to whether I'll continue to use Querydsl instead 
-of the Criteria API.
-- [JQuery Datatables](https://datatables.net/) appears to be very stable, with a seemingly
+- [JQuery Datatables](https://datatables.net/) also appears to be very stable, with a seemingly
 inexhaustible supply of features. My main issue with it is that, while there's plenty
 of documentation, finding what you need can be quite a challenge.
 - [Webjars](www.webjars.org): good for local development, but [see here](http://www.jamesward.com/2014/03/20/webjars-now-on-the-jsdelivr-cdn).
