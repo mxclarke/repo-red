@@ -60,6 +60,8 @@ public class StudentsRestController {
 			@RequestBody final JQueryDatatablesRequest request) {
 		
 		logger.info("Accessed StudentsRestController.getStudents");
+		
+		Assert.notNull(request);
 
 		// Starting index for the requested page.
 		int start = request.getStart();

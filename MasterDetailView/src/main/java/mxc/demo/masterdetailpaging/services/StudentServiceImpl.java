@@ -55,9 +55,15 @@ public class StudentServiceImpl implements StudentService {
 	 * @return the next page of students
 	 */
 	@Override
-	public Page<Student> getStudents(int start, int length, 
-			List<ColumnDTO> columns, Iterable<OrderDTO> orderings) {
+	public Page<Student> getStudents(final int start, final int length, 
+			final List<ColumnDTO> columns, final Iterable<OrderDTO> orderings) {
 
+		// Check pre-conditions.
+		Assert.isTrue(start >= 0, "Parameter 'start' is " + start + " but should be >= 0");
+		Assert.isTrue(length > 0, "Parmeter 'length' is " + length + " but should be > 0");
+		Assert.notNull(columns);
+		Assert.notNull(orderings);
+		
 		// The generated metamodel for Student.
 		QStudent qStudent = QStudent.student;
 		// The predicate for filtering the results.
@@ -96,7 +102,7 @@ public class StudentServiceImpl implements StudentService {
 		Sort sort = getColumnOrderings(columns,orderings);
 
 		// Determine the page.
-		int pageIndex = length > 0 ? start/length : 0; 
+		int pageIndex = length > 0 ? start/length : 0; // defensive coding, length should be > 0 as per preconditions
     	Pageable pageable = new PageRequest(pageIndex, length, sort);
    
     	// Request the data from the repo.
