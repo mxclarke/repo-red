@@ -31,9 +31,8 @@ The project also utilises:
 - H2 in-memory database
 - [Webjars](www.webjars.org)
 
-The project was developed using the Eclipse Mars IDE. With the introduction of Querydsl various
-m2e quirks reared their ugly heads. These are noted in the [setup section](#settingUp) of this document.
-I have not attempted to build and run the project using any other IDE.
+The project was developed using the Eclipse Mars IDE. With the introduction of Querydsl, various
+m2e quirks reared their ugly heads. These are noted below.
 
 ## <a name="settingUp"></a>Setting up and Running
 
@@ -95,6 +94,14 @@ See also the following:
 - https://wiki.eclipse.org/Eclipse.ini
 - http://stackoverflow.com/questions/24482259/eclipse-issue-with-maven-build-and-jdk-when-generating-qclasses-in-querydsl
 
+## Testing
+
+The app has been tested in the following browsers:
+
+- Firefox version 46.0.1
+- Chrome Version 50.0.2661.102 m
+- IE version 11.0.9600.18314
+
 ## Conclusions
 
 - I cannot recommend [Spring Boot](http://projects.spring.io/spring-boot/) highly enough. 
@@ -112,6 +119,6 @@ of documentation, finding what you need can be quite a challenge.
 
 - Update to latest version of Spring Boot.
 - Integration tests on the service layer.
-- Test using browsers other than Firefox.
+
 
 
