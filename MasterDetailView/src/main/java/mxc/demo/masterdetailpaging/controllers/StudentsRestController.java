@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import mxc.demo.masterdetailpaging.domain.Student;
 import mxc.demo.masterdetailpaging.dto.JQueryDatatablesRequest;
 import mxc.demo.masterdetailpaging.services.StudentService;
+import org.springframework.util.Assert;
 
 /**
  * Controller for accessing Student data, rather than the views.
@@ -34,9 +35,14 @@ public class StudentsRestController {
 
 	private final Logger logger = Logger.getLogger(StudentsRestController.class);
 	
-	@Autowired
-	private StudentService studentService;
+	private final StudentService studentService;
 	
+	@Autowired
+	public StudentsRestController(StudentService studentService) {
+		Assert.notNull(studentService);
+		this.studentService = studentService;
+	}
+
 	/**
 	 * Handles a POST request from a JQuery Datables client, returning a page of
 	 * Student objects. Handles filtering and sorting as well as paging.

@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import com.mysema.query.BooleanBuilder;
@@ -26,8 +27,13 @@ public class StudentServiceImpl implements StudentService {
 
 	private final Logger logger = Logger.getLogger(StudentServiceImpl.class);
 	
+	private final StudentRepository repo;
+	
 	@Autowired
-	private StudentRepository repo;
+	public StudentServiceImpl(StudentRepository repo) {
+		Assert.notNull(repo);
+		this.repo = repo;
+	}
 	
 	/**
 	 * @return all students
