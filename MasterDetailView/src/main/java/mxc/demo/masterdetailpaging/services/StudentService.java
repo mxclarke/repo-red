@@ -21,16 +21,8 @@ public interface StudentService {
 	
 	Page<Student> getStudents(Pageable pageable);
 	
+	Page<Student> getStudents(Predicate predicate, Pageable pageable);
+	
 	Page<Student> getStudents(int start, int length, 
 			List<ColumnDTO> columns, Iterable<OrderDTO> ordering);
-	
-	Page<Student> getStudents(Predicate predicate, Pageable pageable);
-		
-	Student getStudentById(int id);
-	
-	Student saveStudent(Student student);
-	
-	void deleteStudent(int id);
-	
-	Student getStudentByLastName(String lastName);
 }

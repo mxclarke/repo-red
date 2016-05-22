@@ -49,8 +49,8 @@ public class StudentServiceImpl implements StudentService {
 	 * @param start Starting index into the total list of students for this requested page,
 	 * assumed to be >= 0
 	 * @param length Number of students for this requested page, assumed to be > 0
-	 * @param columns Metadata supplied by the client for each field
-	 * @param orderings Per-column sorting information as requested by the client
+	 * @param columns Non-null metadata supplied by the client for each field
+	 * @param orderings Non-null per-column sorting information as requested by the client
 	 * 
 	 * @return the next page of students
 	 */
@@ -64,14 +64,53 @@ public class StudentServiceImpl implements StudentService {
 		Assert.notNull(columns);
 		Assert.notNull(orderings);
 		
+		BooleanBuilder booleanBuilder = getFilteringPredicate(columns);
+		
+		// Determine the column orderings, if any.
+		Sort sort = getColumnOrderings(columns,orderings);
+
+		// Determine the page.
+		int pageIndex = length > 0 ? start/length : 0; // defensive coding, length should be > 0 as per preconditions
+    	Pageable pageable = new PageRequest(pageIndex, length, sort);
+   
+    	// Request the data from the repo.
+    	Page<Student> page = null; 
+		if ( booleanBuilder.hasValue() ) {
+			page = getStudents(booleanBuilder.getValue(), pageable); // filter, page and sort
+		} else {
+			page = getStudents(pageable); // page and sort
+		}
+		
+		return page;
+	}
+
+	@Override
+	public Page<Student> getStudents(Predicate predicate, Pageable pageable) {
+		return repo.findAll(predicate, pageable);
+	}
+
+	@Override
+	public Page<Student> getStudents(Pageable pageable) {
+		return repo.findAll(pageable);
+	}
+	
+	/**
+	 * Adapt the per-column filtering information from the DTO to a BooleanBuilder object,
+	 * potentially containing a Predicate, as expected by the repository. 
+	 * @param columns Non-null metadata supplied by the client for each field
+	 * @return the filtering predicate to be supplied to the repository's
+	 * query method
+	 */
+	private BooleanBuilder getFilteringPredicate(final List<ColumnDTO> columns) {
+		Assert.notNull(columns);
+		
+		// The predicate (return value) for filtering the results.
+		BooleanBuilder booleanBuilder = new BooleanBuilder();
 		// The generated metamodel for Student.
 		QStudent qStudent = QStudent.student;
-		// The predicate for filtering the results.
-		BooleanBuilder booleanBuilder = new BooleanBuilder();
 
 		// Loop through all the columns to extract search/filtering information, adding
 		// it to the predicate. NOTE: regex is possible but by default is off.
-		// TODO: we don't really want literal strings here. 
 		for ( ColumnDTO column : columns ) {
 			String searchValue = column.isSearchable() ? column.getSearch().getValue() : "";
 			if ( !StringUtils.isEmpty(searchValue) ) {
@@ -97,53 +136,8 @@ public class StudentServiceImpl implements StudentService {
 				}
 			}
 		}
-			
-		// Determine the column orderings, if any.
-		Sort sort = getColumnOrderings(columns,orderings);
-
-		// Determine the page.
-		int pageIndex = length > 0 ? start/length : 0; // defensive coding, length should be > 0 as per preconditions
-    	Pageable pageable = new PageRequest(pageIndex, length, sort);
-   
-    	// Request the data from the repo.
-    	Page<Student> page = null; 
-		if ( booleanBuilder.hasValue() ) {
-			page = getStudents(booleanBuilder.getValue(), pageable);
-		} else {
-			page = getStudents(pageable);
-		}
 		
-		return page;
-	}
-
-	@Override
-	public Page<Student> getStudents(Predicate predicate, Pageable pageable) {
-		return repo.findAll(predicate, pageable);
-	}
-
-	@Override
-	public Page<Student> getStudents(Pageable pageable) {
-		return repo.findAll(pageable);
-	}
-	
-	@Override
-	public Student getStudentById(int id) {
-		return repo.findOne(id);
-	}
-
-	@Override
-	public Student saveStudent(Student student) {
-		return repo.save(student);
-	}
-
-	@Override
-	public void deleteStudent(int id) {
-		repo.delete(id);		
-	}
-
-	@Override
-	public Student getStudentByLastName(String lastName) {
-		return repo.findByLastName(lastName);
+		return booleanBuilder;
 	}
 	
 	/**
