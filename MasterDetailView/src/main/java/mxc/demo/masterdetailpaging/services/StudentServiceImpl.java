@@ -1,6 +1,5 @@
 package mxc.demo.masterdetailpaging.services;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -26,15 +25,15 @@ import mxc.demo.masterdetailpaging.repositories.StudentRepository;
 public class StudentServiceImpl implements StudentService {
 
 	private final Logger logger = Logger.getLogger(StudentServiceImpl.class);
-	
+
 	private final StudentRepository repo;
-	
+
 	@Autowired
 	public StudentServiceImpl(StudentRepository repo) {
 		Assert.notNull(repo);
 		this.repo = repo;
 	}
-	
+
 	/**
 	 * @return all students
 	 */
@@ -42,45 +41,53 @@ public class StudentServiceImpl implements StudentService {
 	public Iterable<Student> getStudents() {
 		return repo.findAll();
 	}
-	
+
 	/**
 	 * Retrieves the next page of students, filtered and sorted.
 	 * 
-	 * @param start Starting index into the total list of students for this requested page,
-	 * assumed to be >= 0
-	 * @param length Number of students for this requested page, assumed to be > 0
-	 * @param columns Non-null metadata supplied by the client for each field
-	 * @param orderings Non-null per-column sorting information as requested by the client
+	 * @param start
+	 *            Starting index into the total list of students for this
+	 *            requested page, assumed to be >= 0
+	 * @param length
+	 *            Number of students for this requested page, assumed to be > 0
+	 * @param columns
+	 *            Non-null metadata supplied by the client for each field
+	 * @param orderings
+	 *            Non-null per-column sorting information as requested by the
+	 *            client
 	 * 
 	 * @return the next page of students
 	 */
 	@Override
-	public Page<Student> getStudents(final int start, final int length, 
-			final List<ColumnDTO> columns, final Iterable<OrderDTO> orderings) {
+	public Page<Student> getStudents(final int start, final int length, final List<ColumnDTO> columns,
+			final Iterable<OrderDTO> orderings) {
 
 		// Check pre-conditions.
 		Assert.isTrue(start >= 0, "Parameter 'start' is " + start + " but should be >= 0");
 		Assert.isTrue(length > 0, "Parmeter 'length' is " + length + " but should be > 0");
 		Assert.notNull(columns);
 		Assert.notNull(orderings);
-		
+
 		BooleanBuilder booleanBuilder = getFilteringPredicate(columns);
-		
+
 		// Determine the column orderings, if any.
-		Sort sort = getColumnOrderings(columns,orderings);
+		List<Sort.Order> springColumnOrders = SpringDTOAdapter.instance.getColumnOrderings(columns, orderings);
 
 		// Determine the page.
-		int pageIndex = length > 0 ? start/length : 0; // defensive coding, length should be > 0 as per preconditions
-    	Pageable pageable = new PageRequest(pageIndex, length, sort);
-   
-    	// Request the data from the repo.
-    	Page<Student> page = null; 
-		if ( booleanBuilder.hasValue() ) {
-			page = getStudents(booleanBuilder.getValue(), pageable); // filter, page and sort
-		} else {
-			page = getStudents(pageable); // page and sort
-		}
-		
+		int pageIndex = length > 0 ? start / length : 0; // defensive coding,
+															// length should be
+															// > 0 as per
+															// preconditions
+		Pageable pageable = springColumnOrders.isEmpty() ? new PageRequest(pageIndex, length) // without
+																								// sorting
+				: new PageRequest(pageIndex, length, new Sort(springColumnOrders)); // with
+																					// sorting
+
+		// Request the data from the repo.
+		Page<Student> page = booleanBuilder.hasValue() ? getStudents(booleanBuilder.getValue(), pageable) // with
+																											// filtering
+				: getStudents(pageable); // without filtering
+
 		return page;
 	}
 
@@ -93,40 +100,46 @@ public class StudentServiceImpl implements StudentService {
 	public Page<Student> getStudents(Pageable pageable) {
 		return repo.findAll(pageable);
 	}
-	
+
 	/**
-	 * Adapt the per-column filtering information from the DTO to a BooleanBuilder object,
-	 * potentially containing a Predicate, as expected by the repository. 
-	 * @param columns Non-null metadata supplied by the client for each field
-	 * @return the filtering predicate to be supplied to the repository's
-	 * query method
+	 * Adapt the per-column filtering information from the DTO to a
+	 * BooleanBuilder object, potentially containing a Predicate, as expected by
+	 * the repository.
+	 * 
+	 * @param columns
+	 *            Non-null metadata supplied by the client for each field
+	 * @return the filtering predicate to be supplied to the repository's query
+	 *         method
 	 */
 	private BooleanBuilder getFilteringPredicate(final List<ColumnDTO> columns) {
 		Assert.notNull(columns);
-		
+
 		// The predicate (return value) for filtering the results.
 		BooleanBuilder booleanBuilder = new BooleanBuilder();
 		// The generated metamodel for Student.
 		QStudent qStudent = QStudent.student;
 
-		// Loop through all the columns to extract search/filtering information, adding
+		// Loop through all the columns to extract search/filtering information,
+		// adding
 		// it to the predicate. NOTE: regex is possible but by default is off.
-		for ( ColumnDTO column : columns ) {
+		for (ColumnDTO column : columns) {
 			String searchValue = column.isSearchable() ? column.getSearch().getValue() : "";
-			if ( !StringUtils.isEmpty(searchValue) ) {
+			if (!StringUtils.isEmpty(searchValue)) {
 				String columnRef = column.getData();
-				switch( columnRef ) {
+				switch (columnRef) {
 				case "lastName":
 					booleanBuilder.and(qStudent.lastName.containsIgnoreCase(searchValue));
 					break;
 				case "firstName":
 					booleanBuilder.and(qStudent.firstName.containsIgnoreCase(searchValue));
 					break;
-				case "external" :
-					// TODO: it will be interesting to see what happens when you change the
-					// values to "yes" and "no", or otherwise internationalise it.
+				case "external":
+					// TODO: it will be interesting to see what happens when you
+					// change the
+					// values to "yes" and "no", or otherwise internationalise
+					// it.
 					booleanBuilder.and(qStudent.external.stringValue().containsIgnoreCase(searchValue));
-					//booleanBuilder.and(qStudent.external.eq(Boolean.valueOf(searchValue)));
+					// booleanBuilder.and(qStudent.external.eq(Boolean.valueOf(searchValue)));
 					break;
 				case "studentId":
 					booleanBuilder.and(qStudent.studentId.containsIgnoreCase(searchValue));
@@ -136,38 +149,7 @@ public class StudentServiceImpl implements StudentService {
 				}
 			}
 		}
-		
+
 		return booleanBuilder;
-	}
-	
-	/**
-	 * Adapt the sorting information from the DTO to a Sort object as expected by
-	 * the repository.
-	 * 
-	 * This is pretty generic (as far as the DTOs are concerned), so could probably go
-	 *  into a utility class for JQuery Datatables.
-	 *  
-	 * @param columns list of column metadata from the client's request
-	 * @param orderings list of ordering information from the client's request
-	 * @return ordering information that can be used to access the repository
-	 */
-	private Sort getColumnOrderings(List<ColumnDTO> columns, Iterable<OrderDTO> orderings) {
-		
-		List<Sort.Order> orders = new ArrayList<>();
-		
-		for ( OrderDTO orderDTO : orderings ) {
-			int column = orderDTO.getColumn();
-			// Assuming what we get back from the client is correct!
-			String property = columns.get(column).getData();
-			Sort.Direction direction = Sort.Direction.fromStringOrNull(orderDTO.getDir().toUpperCase());
-			//Sort.Direction direction = Sort.Direction.valueOf(orderDTO.getDir());
-			if ( direction != null ) {
-				Sort.Order order = new Sort.Order(direction, property);
-				orders.add(order);
-			}
-		}
-		
-		Sort sort = new Sort(orders);
-		return sort;
 	}
 }
