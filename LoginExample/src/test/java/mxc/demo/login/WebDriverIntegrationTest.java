@@ -65,6 +65,10 @@ public class WebDriverIntegrationTest {
 			driver.quit();
 	}
 	
+	/**
+	 * Tests that an anonymous user can access home and the login page, but
+	 * no others.
+	 */
 	//@Ignore
 	@Test
 	public void testAnonymousAccess() {
@@ -101,6 +105,11 @@ public class WebDriverIntegrationTest {
 		verifyNobodyLoggedIn(driver, wait);
 	}
 	
+	/**
+	 * Tests two ordinary users, that they can access pleb view once
+	 * authenticated, cannot access admin views, and cannot access pleb
+	 * view once logged out.
+	 */
 	//@Ignore
 	@Test
 	public void testOrdinaryUser() {
@@ -113,11 +122,9 @@ public class WebDriverIntegrationTest {
         
         WebElement plebBn = wait.until(
         		   ExpectedConditions.presenceOfElementLocated(By.id("pleb")));
-       // wait.until(ExpectedConditions.elementToBeClickable(plebBn));
         // Check that, as far as the UI is concerned, no one is logged in.
         verifyNobodyLoggedIn(driver, wait);
-        clickIt(wait, plebBn);
-       // plebBn.click(); // should take u to login page
+        clickIt(wait, plebBn); // should take u to login page
         
         //verifyLoginPage(driver, wait);
         verifyPage(driver, wait, LOGIN_TITLE);
@@ -168,6 +175,9 @@ public class WebDriverIntegrationTest {
         verifyPageUser(driver, wait, "jash", UserRole.Pleb);        
 	}
 	
+	/**
+	 * Tests invalid logins.
+	 */
 	//@Ignore
 	@Test
 	public void testBogusLogin() {
@@ -180,12 +190,10 @@ public class WebDriverIntegrationTest {
         
         WebElement plebBn = wait.until(
         		   ExpectedConditions.presenceOfElementLocated(By.id("pleb")));
-       // wait.until(ExpectedConditions.elementToBeClickable(plebBn));
         // Check that, as far as the UI is concerned, no one is logged in.
         verifyNobodyLoggedIn(driver, wait);
-        clickIt(wait, plebBn);
-       // plebBn.click(); // should take u to login page
-        
+        clickIt(wait, plebBn); // should take u to login page
+  
         verifyPage(driver, wait, LOGIN_TITLE);
         verifyNobodyLoggedIn(driver, wait);
         login(driver, wait, "jash", "wrongpassword"); 
@@ -263,6 +271,10 @@ public class WebDriverIntegrationTest {
         verifyNobodyLoggedIn(driver, wait);
 	}
 	
+	/**
+	 * Tests that the admin user can access everything, but is denied access
+	 * once they log out.
+	 */
 	//@Ignore
 	@Test
 	public void testAdmin() {
@@ -273,11 +285,9 @@ public class WebDriverIntegrationTest {
 		verifyPage(driver, wait, HOME_TITLE);
 
 		WebElement adminBn = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("admin")));
-		//wait.until(ExpectedConditions.elementToBeClickable(adminBn));
 		// Check that, as far as the UI is concerned, no one is logged in.
 		verifyNobodyLoggedIn(driver, wait);
-		//adminBn.click(); // should take u to login page
-        clickIt(wait, adminBn);
+        clickIt(wait, adminBn); // should take u to login page
 
 		verifyPage(driver, wait, LOGIN_TITLE);
 		verifyNobodyLoggedIn(driver, wait);
@@ -288,8 +298,6 @@ public class WebDriverIntegrationTest {
 		
 		// Go to the second admin page.
 		WebElement otherBn = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("someotheradminpage")));
-		//wait.until(ExpectedConditions.elementToBeClickable(otherBn));
-		//otherBn.click();
         clickIt(wait, otherBn);
 		verifyPage(driver, wait, ADMIN2_VIEW_TITLE);
 		verifyPageUser(driver, wait, "adminUser", UserRole.Uber);
@@ -326,6 +334,10 @@ public class WebDriverIntegrationTest {
 		verifyNobodyLoggedIn(driver, wait);	
 	}
 	
+	/**
+	 * An admin user logs in and logs out. An ordinary user then logs in
+	 * and tries to access an admin page. Access should be denied.
+	 */
 	//@Ignore
 	@Test
 	public void testOrdinaryUserAfterAdmin() {
@@ -340,8 +352,6 @@ public class WebDriverIntegrationTest {
 		verifyPageUser(driver, wait, "adminUser", UserRole.Uber);
 
 		WebElement adminBn = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("admin")));
-		//wait.until(ExpectedConditions.elementToBeClickable(adminBn));
-		//adminBn.click();
         clickIt(wait, adminBn);
 		verifyPage(driver, wait, ADMIN1_VIEW_TITLE);
 		verifyPageUser(driver, wait, "adminUser", UserRole.Uber);
@@ -375,8 +385,7 @@ public class WebDriverIntegrationTest {
 	 * A bit of googling around, and I came across this:
 	 * http://stackoverflow.com/questions/11676790/click-command-in-selenium-webdriver-does-not-work
 	 * I removed the call to the base url, and replaced the click. Now it works. 
-	 * You'll note that the SO post goes back to 2012, so this suggests that some things
-	 * have been a little unstable in Selenium WD for quite some time.
+	 * (You'll note that the SO post goes back to 2012.)
 	 * Therefore, I am using the (apparently) more reliable way of doing things
 	 * throughout this code, until I hear of a better plan.
 	 * 
@@ -434,9 +443,7 @@ public class WebDriverIntegrationTest {
 	 */
 	private void logout(WebDriver driver, WebDriverWait wait) {
         WebElement logoutBn = driver.findElement(By.cssSelector(".mxcHeaderButton input"));
-        //wait.until(ExpectedConditions.elementToBeClickable(logoutBn));
         clickIt(wait, logoutBn);
-
        // logoutBn.click();
 	}
 	
@@ -496,53 +503,4 @@ public class WebDriverIntegrationTest {
 
     	assertEquals(expectedRole, roleElement.getText());
     }
-    
-    /**
-     * Preconditions: no one is logged in
-     * @param driver
-     * @param wait
-     */
-    /*
-	private void testAnonymousAccess(WebDriver driver, WebDriverWait wait) {
-		driver.get(ADMIN2_URL);
-		// Wait until we at least have a page from this app -- we can test header elements.
-	    wait.until(
-      		   ExpectedConditions.presenceOfElementLocated(By.id("mxcHeaderId")));
-	    verifyPage(driver, wait, LOGIN_TITLE);
-		verifyNobodyLoggedIn(driver, wait);
-		
-		driver.get(BASE_URL);
-		//wait.until(ExpectedConditions.stalenessOf(lastTitle));
-		//lastTitle = verifyHomePage(driver, wait);
-		verifyPage(driver, wait, HOME_TITLE);
-		verifyNobodyLoggedIn(driver, wait);
-		
-		driver.get(LOGIN_URL);
-		//wait.until(ExpectedConditions.stalenessOf(lastTitle));
-		verifyPage(driver, wait, LOGIN_TITLE);
-		
-		verifyNobodyLoggedIn(driver, wait);
-		
-		driver.get(ACCESS_DENIED_URL);
-		//wait.until(ExpectedConditions.stalenessOf(lastTitle));
-		verifyPage(driver, wait, LOGIN_TITLE);
-		verifyNobodyLoggedIn(driver, wait);
-		
-		driver.get(PLEB_URL);
-		//wait.until(ExpectedConditions.stalenessOf(lastTitle));
-		verifyPage(driver, wait, LOGIN_TITLE);
-		verifyNobodyLoggedIn(driver, wait);
-		
-		driver.get(BASE_URL);
-		//wait.until(ExpectedConditions.stalenessOf(lastTitle));
-		verifyPage(driver, wait, HOME_TITLE);
-		verifyNobodyLoggedIn(driver, wait);
-		
-		driver.get(ADMIN1_URL);
-		//wait.until(ExpectedConditions.stalenessOf(lastTitle));
-		verifyPage(driver, wait, LOGIN_TITLE);
-		verifyNobodyLoggedIn(driver, wait);
-	}
-	*/
-    
 }
