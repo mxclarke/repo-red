@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+
+<title>Administration Details</title>
+
+<!--/*/ <th:block th:include="fragments/headerincludes :: head"></th:block> /*/-->
+
+</head>
+<body>
+	<!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
+
+	<section class="mxcContainer">
+		<p>This is another ADMIN view for uber-users only.</p>
+		
+		<p>The quick brown fox jumped over the lazy dog. The user is 
+		 <span th:inline="text">[[${#httpServletRequest.remoteUser}]]</span>.</p>
+	</section>
+
+	<!--/*/ <th:block th:include="fragments/footer :: footer"></th:block> /*/-->
+
+</body>
+</html>

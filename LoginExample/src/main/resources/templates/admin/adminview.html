@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+
+<title>Administration</title>
+
+<!--/*/ <th:block th:include="fragments/headerincludes :: head"></th:block> /*/-->
+
+</head>
+<body>
+	<!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
+
+	<section class="mxcContainer">
+	<p>You got in as an UBER-USER. You should not be able to see this page 
+	if you are any other type of user, or have not been authenticated.</p>
+		
+        <h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1>
+        
+        <div class="mxcMainButton">
+			<a id="someotheradminpage" th:href="@{/admin/secondPage}">Other admin page</a>
+		</div>
+		
+		<!-- We don't include a sign-out button because we have put one in the header -->
+		<!-- that appears on every page. -->
+		
+	</section>
+
+	<!--/*/ <th:block th:include="fragments/footer :: footer"></th:block> /*/-->
+
+</body>
+
+<script>
+$(document).ready(function(){
+ 	$( "input[type=submit], a, button" )
+ 	      .button();
+ });
+</script>
+</html>

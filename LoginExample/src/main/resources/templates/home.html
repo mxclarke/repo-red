@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+
+<title>Login example app</title>
+
+<!--/*/ <th:block th:include="fragments/headerincludes :: head"></th:block> /*/-->
+
+</head>
+<body>
+	<!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
+
+	<section class="mxcContainer">
+
+		<p th:text="#{home.welcome}">Welcome text.</p>
+		
+		<p th:text="#{home.welcome.detail}">Welcome detail text.</p>
+	
+		<div class="mxcMainButton">
+			<a id="pleb" th:href="@{/pleb}">Plebs login</a>
+		</div>
+		<div class="mxcMainButton">
+			<a id="admin" th:href="@{/admin}">Uber Staff</a>
+		</div>
+	</section>
+	
+	<!--/*/ <th:block th:include="fragments/footer :: footer"></th:block> /*/-->
+	
+</body>
+
+<script th:inline="javascript">
+ $(document).ready(function(){
+ 	$( "input[type=submit], a, button" )
+ 	      .button();
+ });
+</script>
+  
+</html>

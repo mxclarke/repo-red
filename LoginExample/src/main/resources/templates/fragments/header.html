@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+>
+<head lang="en">
+</head>
+<body>
+
+	<div th:fragment="header">
+		<header id="mxcHeaderId">
+			<h1>Login Example with Spring Security</h1>
+            <div class="mxcHeaderUserDetails" sec:authorize="isAuthenticated()">
+            	User <span id="mxcHeaderUsername" sec:authentication="principal.username">none</span> 
+               (<span id="mxcHeaderRole" sec:authentication="principal.authorities">roles</span>)
+				<form id = "mxcHeaderLogoutButton" class="mxcHeaderButton" th:action="@{/logout}" method="post">
+					<input type="submit" value="Sign Out"/>
+				</form>
+			</div>
+
+			<!-- Once you have your general login working, you can include a login  -->
+			<!-- widget on the header too. -->
+<!-- 			<div sec:authorize="isAnonymous()"> -->
+<!--   				NOBODY is logged in -->
+<!-- 			</div> -->
+
+		</header>	
+	</div>
+
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+
+<title>Login form</title>
+
+<!--/*/ <th:block th:include="fragments/headerincludes :: head"></th:block> /*/-->
+
+</head>
+<body>
+	<!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
+
+<section class="mxcContainer">
+
+	<!-- When authentication fails, the browser is redirected  -->
+	<!-- to /login?error so we can display an error message by detecting  -->
+	<!-- if the parameter error is non-null -->
+	<div class="mxcLoginInvalid" th:if="${param.error}">
+		<span class="mxcLoginInvalidText">Invalid username and password.</span>
+	</div>
+        
+<!--          	When we are successfully logged out, the browser is redirected  -->
+<!--          	to /login?logout so we can display an logout success message by  -->
+<!--          	detecting if the parameter logout is non-null. -->
+        <div class="mxcLogoutSuccessful" th:if="${param.logout}">
+            You have been logged out.
+        </div>
+        
+	<!--         The URL we submit our username and password to is the same URL as our login  -->
+	<!--         form (i.e. /login), but a POST instead of a GET -->
+	<div class="mxclogin">
+        <form th:action="@{/login}" method="post">
+            <div class="mxcInputField">
+            	<label for="username">User Name:</label> 
+            	<input type="text" id="username" name="username"/>
+            </div>
+            <div class="mxcInputField">
+            	<label for="password">Password:</label>
+            	<input type="password" id="password" name="password"/>
+            </div>
+            
+			<!--  Thanks to @EnableWebSecurity annotation we don't need to add CSRF field, it gets -->
+			<!--  added at runtime -->
+<!--             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/> -->
+ 		
+            <div class="mxcLoginSubmit"><input  type="submit" value="Sign In"/></div>
+        </form>
+	</div>
+		
+	</section>
+
+	<!--/*/ <th:block th:include="fragments/footer :: footer"></th:block> /*/-->
+
+</body>
+  
+<script th:inline="javascript">
+ $(document).ready(function(){
+ 	$( "input[type=submit], a, button" )
+ 	      .button();
+ });
+</script>
+
+</html>
