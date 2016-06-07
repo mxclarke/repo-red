@@ -23,6 +23,6 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
         registry.addViewController("/admin/secondPage").setViewName("admin/anotheradminview");
         registry.addViewController("/login").setViewName("login");
         registry.addViewController("/accessdenied").setViewName("error/accessdenied");
-        //registry.addViewController("/expired").setViewName("error/userexpired");
+        registry.addViewController("/expired").setViewName("error/userexpired");
     }
 }
