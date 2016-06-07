@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+
+<title>Session expired</title>
+
+<!--/*/ <th:block th:include="fragments/headerincludes :: head"></th:block> /*/-->
+
+</head>
+<body>
+	<!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
+
+	<section class="mxcContainer">
+	<h1>Session expired</h1>
+	
+	<p>You appear to be logged in elsewhere, and that session has now expired.</p>
+	
+	<p>If you believe you should not be logged in anywhere else, please take the precaution
+	of changing your password.</p>
+	
+	<p>You can proceed to the application by clicking this button:</p>
+
+	<div class="mxcMainButton">
+			<a id="examplehome" th:href="@{/}">Home</a>
+		</div>
+	</section>
+
+	<!--/*/ <th:block th:include="fragments/footer :: footer"></th:block> /*/-->
+
+<script>
+$(document).ready(function(){
+ 	$( "input[type=submit], a, button" )
+ 	      .button();
+ });
+</script>
+</body>
+
+</html>

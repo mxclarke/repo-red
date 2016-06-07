@@ -66,6 +66,13 @@ An unsuccessful login attempt will return to the login page with an "invalid" me
 
 When users log out, they are returned to the login page with a message to that effect.
 
+If a user is logged in on one browser, then attempts to login on another, the attempt
+will succeed but the original session will have expired and any further attempts to
+access the session on the first browser will present the user with the login page.
+Furthermore, the successful login on the second browser will take the user to the
+"expired" page, to warn them that they are already logged in elsewhere and to change
+their password if they suspect someone else is accessing their account.
+
 The app doesn't . . . 
 
 - The first thing you'll notice is that your web app still won't be secure unless you address
@@ -78,14 +85,15 @@ once you [have](https://looksok.wordpress.com/2014/11/16/configure-sslhttps-on-t
 your [certificate](http://stackoverflow.com/questions/29522114/how-to-add-self-signed-ssl-certificate-to-jhipster-sample-app) 
 (see below) you only need to [update application.properties]
 (http://docs.spring.io/spring-boot/docs/current/reference/html/howto-embedded-servlet-containers.html#howto-configure-ssl), and there's an example in Github [here](https://github.com/spring-projects/spring-boot/tree/master/spring-boot-samples/spring-boot-sample-tomcat-ssl).
-- In the interest of simplicity, the app does not include a registration mechanism.
+- In the interest of simplicity, the app does not include a registration mechanism or a
+change-password mechanism.
 - Ideally, the app should redirect the user to a suitable page based on their role. Such an app would
 only need a single login button. I'm planning to do things that way in my next project.
 - It is also possible to match on, for example, a user's id, to ensure that User1 cannot see User2's
-details. Again, this will be handled in a future project.
-- Ideally, the app should secure specific methods. For example, if you have a service method to return
-all your users, you really only want your admins to be able to access it. Spring Security provides
-such a mechanism. Future project . . .
+details. Again, this will be handled in a future project when admin users have the
+ability to add, delete and edit (CRUD) users.
+- Ideally, the app should secure specific methods. For example, if you have a RESTful
+service method to return all your users, you really only want your admins to be able to access it. Spring Security provides this functionality. Future project . . .
 
 It does . . .
 
