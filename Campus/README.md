@@ -7,6 +7,7 @@ This is a small project (and a [work in progress](https://github.com/mxclarke/re
 - Spring Data JPA
 - [Thymeleaf](http://www.thymeleaf.org/)
 - responsive UI mechanisms for web apps
+- HTML5/Javascript/CSS front end
 
 Spring Boot favours convention over configuration, and makes it easy to 
 quickly get a web application up and running. It features an embedded
@@ -55,7 +56,8 @@ The Campus app includes the following:
 thus increasing security and preventing zombie login sessions;
 - validation of data on entry to the end points using custom annotations aggregating existing javax.validation.constraints
 annotations, thus consolidating the validation of any field in one place;
-- blocking of any data for which the user does not have permissions so that it is not sent through to the service layer.
+- filtering of outbound data;
+- blocking of any incoming data for which the user does not have permissions so that it is not sent through to the service layer.
 
 Please note that password expiration and locking on multiple failed attempts has not been implemented. The latter is particularly important for the prevention of brute force attacks.
 
