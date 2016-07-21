@@ -21,7 +21,7 @@ The project also utilises:
 
 - Spring Data JPA 
 - H2 in-memory database
-- [Webjars](www.webjars.org)
+- [Webjars](http://www.webjars.org)
 
 The project was developed using the Eclipse Mars IDE. I have not attempted to build and run the project using any other IDE.
 

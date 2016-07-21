@@ -1,6 +1,6 @@
 # Introduction
 
-This is a small project (and a [work in progress](github.com/mxclarke/repo-red/tree/master/Campus#remaining-work)) to demonstrate the use of:
+This is a small project (and a [work in progress](https://github.com/mxclarke/repo-red/tree/master/Campus#remaining-work)) to demonstrate the use of:
 
 - [Spring Security 4](http://projects.spring.io/spring-security/) in a web application environment
 - Spring MVC 4 with [Spring Boot](http://projects.spring.io/spring-boot/)
@@ -19,7 +19,7 @@ as a replacement for JSPs.
 The project also utilises:
 
 - an H2 in-memory database
-- [Webjars](www.webjars.org) for development purposes only
+- [Webjars](http://www.webjars.org) for development purposes only
 
 The project was developed using the Eclipse Mars IDE. I have not attempted to build and run the project using any other IDE.
 
@@ -31,7 +31,7 @@ The project is a (simplistic) web application for students, lecturers and admini
 - Students can sign in and view their own details. They can also edit their own details, but do not have the ability to edit certain details such as their name and the amount they have paid towards their courses. They can select and de-select courses in which they wish to be enrolled. A student cannot view another student's details.
 - Lecturers, too, can view and edit their own details.
 
-The project is not yet finished. Please refer to the [todo list](github.com/mxclarke/repo-red/tree/master/Campus#remaining-work) below.
+The project is not yet finished. Please refer to the [todo list](https://github.com/mxclarke/repo-red/tree/master/Campus#remaining-work) below.
 
 Note also that I have simplified certain use cases. For example, the change-password page does not require the user to repeat the password. (Should it? Some people have raised questions as to whether this is a helpful mechanism in the real world.)
 
@@ -41,14 +41,14 @@ Obviously, a real campus administration application would be much more complex t
 
 ## Spring Security
 
-This project builds on the work of my [previous project](github.com/mxclarke/repo-red/tree/master/LoginExample) to demonstrate role-based authentication. However, [as discussed](github.com/mxclarke/repo-red/tree/master/LoginExample#it-does-do-it-doesnt-do), if the Campus project were to be set up as it stands and without SSL, it would still not address the matter of the transport protocol. This means that all data, including passwords and other sensitive details, would travel across the wire using the HTTP protocol and in plain text. No web application should be deployed without addressing this concern.
+This project builds on the work of my [previous project](https://github.com/mxclarke/repo-red/tree/master/LoginExample) to demonstrate role-based authentication. However, [as discussed](https://github.com/mxclarke/repo-red/tree/master/LoginExample#it-does-do-it-doesnt-do), if the Campus project were to be set up as it stands and without SSL, it would still not address the matter of the transport protocol. This means that all data, including passwords and other sensitive details, would travel across the wire using the HTTP protocol and in plain text. No web application should be deployed without addressing this concern.
 
 The Campus app includes the following:
 
-- protection against [CSRF](www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)), as handled automatically by Spring Security;
+- protection against [CSRF](http://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)), as handled automatically by Spring Security;
 - a custom success handler, such that when a user logs in they are taken to the landing page appropriate for their role;
 - an "access denied" page for unsuccessful sign-in attempts;
-- [bcrypt](en.wikipedia.org/wiki/Bcrypt) password encoding;
+- [bcrypt](https://en.wikipedia.org/wiki/Bcrypt) password encoding;
 - timeouts, as handled automatically by Spring Security;
 - pre-authorisation for end points, preventing, for example, a student from accessing another's view page;
 - session management on a last-login-wins basis, such that a session is expired if a user attempts to sign in elsewhere, 
