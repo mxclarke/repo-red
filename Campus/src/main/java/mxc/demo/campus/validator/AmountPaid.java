@@ -14,7 +14,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 /**
- * Validates a person's first name or last name.
+ * Validates the amount a student has paid towards their fees, to be within range.
  */
 @NotNull
 @Min(AmountPaid.MIN)

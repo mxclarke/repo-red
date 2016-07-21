@@ -13,6 +13,10 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+/**
+ * Validates a user's username.
+ *
+ */
 @NotNull
 @Size(min=UserId.MIN_LENGTH, max=UserId.MAX_LENGTH)
 @Pattern(regexp=UserId.PATTERN)

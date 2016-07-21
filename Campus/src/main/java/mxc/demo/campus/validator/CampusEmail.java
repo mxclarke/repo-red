@@ -14,6 +14,10 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.Email;
 
+/**
+ * Validate's a user's email address.
+ *
+ */
 @NotNull
 @Size(min=CampusEmail.MIN_LENGTH, max=CampusEmail.MAX_LENGTH)
 @Email

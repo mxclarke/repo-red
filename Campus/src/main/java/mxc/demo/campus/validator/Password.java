@@ -9,6 +9,10 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
+/**
+ * Validates a user's password prior to hashing.
+ *
+ */
 @Constraint(validatedBy = PasswordValidator.class)
 @Target( { ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER, ElementType.ANNOTATION_TYPE })
 @Retention(RetentionPolicy.RUNTIME)

@@ -14,7 +14,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 /**
- * Validates a person's first name or last name.
+ * Validates the name of a course.
  */
 @NotNull
 @Size(min=CourseName.MIN_LENGTH, max=CourseName.MAX_LENGTH)

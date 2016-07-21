@@ -14,7 +14,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 /**
- * Validates a person's first name or last name.
+ * Validates a lecturer's salary to be within range.
  */
 @NotNull
 @Min(LecturerSalary.MIN)
