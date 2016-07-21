@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+
+<title>Administration Details</title>
+
+<!--/*/ <th:block th:include="fragments/headerincludes :: head"></th:block> /*/-->
+
+<!-- 	<link rel="stylesheet" type="text/css" -->
+<!-- 		th:href="@{/webjars/jquery-ui/1.11.4/jquery-ui.min.css}" /> -->
+	
+<!-- 	<script th:src="@{/webjars/jquery/2.2.3/jquery.min.js}"></script> -->
+<!-- 	<script th:src="@{/webjars/jquery-ui/1.11.4/jquery-ui.min.js}"></script> -->
+
+<link rel="stylesheet"
+	th:href="@{/webjars/datatables/1.10.11/css/jquery.dataTables.min.css}" />
+<script
+	th:src="@{/webjars/datatables/1.10.11/js/jquery.dataTables.min.js}"></script>
+	
+<script th:src="@{/webjars/datatables.net-responsive/2.0.2/js/dataTables.responsive.min.js}"></script>
+<!-- 	<link rel="stylesheet" type="text/css" th:href="@{/css/campus.css}" -->
+<!-- 		media="screen" /> -->
+<link rel="stylesheet" type="text/css" th:href="@{/css/campusmenu.css}"
+		media="screen" />	
+
+</head>
+<body>
+	<!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
+
+	<section class="mxcContainer">
+		<p>This is another ADMIN view.</p>
+	
+		<section id="students" class="w3-container admin">
+<!-- 		<section id="students" class="admin"> -->
+				<h2>Students</h2>
+									
+				<!-- Insert the datatable. The display class is a shorthand for stripe,  -->
+				<!-- hover, row-border and order-column.  -->
+				<!-- The cell-border class will provide a border around each cell. -->
+				<!-- A real app would have additional optional columns, and would use a -->
+				<!-- hidden column for a unique ID to be used for selection and CRUD operations. -->
+				<!-- Note that although the width attribute is deprecated for HTML5, it was  -->
+				<!-- necessary to get the responsive table working with Ajax. See here: -->
+				<!-- https://datatables.net/extensions/responsive/examples/initialisation/ajax.html -->
+				
+<!-- 				<table id="studentsTable" class="display responsive no-wrap" -->
+<!-- 				cellspacing="0" width="100%"></table> -->
+				<table id="studentsTable" class="display responsive no-wrap" width="100%"></table>
+		
+		</section>
+	
+		
+<!--         <h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1> -->
+<!--         <form th:action="@{/logout}" method="post"> -->
+<!--             <input type="submit" value="Sign Out"/> -->
+<!--         </form> -->
+
+
+	</section>
+
+	<!--/*/ <th:block th:include="fragments/footer :: footer"></th:block> /*/-->
+
+<script th:inline="javascript">
+/*<![CDATA[*/
+(function() { // Begin scoping function
+	
+	// This variable allows us to keep track of the selected item, which Datatables
+	// discards on redraw. Note that, since these views are master-detail, we are
+	// implementing single selection only.
+	var selectedIdx = "";  // Nothing selected at first
+	
+	$(document).ready(function() {
+		var i = 0; // iterator
+		var table;
+		var tableSelector = "#studentsTable";
+	
+		// The columns that the table will display of the incoming data, with
+		// titles provided for the table header.
+		var dataColumns = [
+	    	       { data: "lastName", title: "Last Name" },
+				{ data: "firstName", title: "First Name" },
+		    	 { data: "userId", title: "Id" },
+		    	 { data: "amountPaid", title: "AUD Paid"},
+		    	        	{ data: "external", title: "External?" }
+		                   ];
+		
+		// Multi-column search setup - add the table footer and a text input to each footer cell
+		var htmlStr = getTableFooter(dataColumns);
+	
+		$(tableSelector).append(htmlStr);
+	
+		// Capture the server-supplied CSRF token, which you can then return on a POST
+		// request from this page (Spring security).
+		//var csrfToken = /*[[${_csrf.token}]]*/ null;
+// 		$.fn.dataTable.Responsive.breakpoints = [
+//     { name: 'desktop', width: Infinity },
+//     { name: 'tablet',  width: 1024 },
+//     { name: 'fablet',  width: 768 },
+//     { name: 'phone',   width: 480 }
+// ];
+		
+		// Set up your JQuery Datatable.
+		table = $(tableSelector).DataTable( {
+	        	"columns": dataColumns,
+	       // 	 "autoWidth": false, // needed for appropriate bheaviour on window resize
+			 	"dom": "lrtip",  // display everything except the default search box
+			 	"orderClasses": false, // don't highlight ordered column (interferes with selection)
+			 //	"responsive": true,
+		        "serverSide": true,
+		        "processing": true,
+		        "ajax": {
+		            url: "/students/getPagedStudents",
+		            type: "POST",
+		            beforeSend: function (request) {
+		                request.setRequestHeader("X-CSRF-TOKEN", /*[[${_csrf.token}]]*/ null);
+		            },
+		            contentType: "application/json",
+		            data: function( args ) {
+		            	return JSON.stringify(args);
+		            }
+		        }
+		    } );
+
+	    // Apply the search
+	    table.columns().every( function () {
+	        var that = this;
+	 
+	        $( "input", this.footer() ).on( "keyup change", function () {
+	            if ( that.search() !== this.value ) {
+	                that.search( this.value ).draw();
+	            }
+	        } );
+	    } );
+	    /*
+	    // When the user clicks on a row, that row becomes selected and the detail
+	    // pane is updated.
+		 $(tableSelector + " tbody").on("click", "tr", function(event) {
+		        var data = table.row( this ).data();
+		        onRowSelect(data, event, tableSelector);
+		    } );
+		 
+	    // Reapply any selection when table is redrawn.
+		table.on( "draw.dt", function () {
+			onDraw(table, tableSelector);
+		} );			
+*/
+	} );
+  
+
+	function getTableFooter(dataColumns) {
+		var i = 0; // iterator
+		var len = dataColumns.length;
+		var htmlStr = "<tfoot><tr>";
+		
+		for (i = 0; i < len; i++) {
+			var title = dataColumns[i].title;
+			var thContent = "<input type='text' placeholder='Search " + title + "' />";
+			htmlStr = htmlStr.concat("<th>",thContent,"</th>");
+		}
+		htmlStr = htmlStr.concat("</tr></tfoot>");
+		
+		return htmlStr;
+	}
+	
+	/**
+	* @desc Callback function for when the table is redrawn, which occurs whenever
+	* the user chooses a new page size, another page, sort or search criteria.
+	* Reapplies the selected row, if any.
+	* Datatables destroys and recreates the rows on redraw (next page, filter,
+	* sort etc), so you need to track any selection and reapply it.
+	* The select extension is supposed to make this easier (webjar datatables.net-select)
+	* but I could not get it to work properly for single selection and didn't
+	* want to spend any more time on it.
+	* @param table the JQuery Datatable that is being redrawn
+	*/
+	function onDraw(table, tableSelector) {
+		
+		console.log("ONDRAW");
+		// If a row is meant to be selected, and it's visible, make it so.
+		if ( selectedIdx !== "") {
+			// There should be only one, but we can generalise it for multiple selection.
+			// Add the 'row-selected' class to any rows in the visible table whose
+			// contents match the criteria.
+			$(tableSelector + " td:first-child").filter(function() {
+					return cellMatchesSelection($(this).html());
+			}).parent().addClass("row-selected");
+		}
+		
+		//table.responsive.recalc();
+	}
+	
+	/**
+	* @desc Helper function for single selection of table rows, which can be 
+	* modified for multiple selection.
+	* @return true if the given text of a single cell matches that of the
+	* stored selected row, selectedIdx, otherwise false.
+	*/
+	function cellMatchesSelection(cellText) {
+		return cellText === selectedIdx;
+	}
+	
+	/**
+	* @desc Callback for row selection, which highlights the selected row and
+	* populates the details panel.
+	* @param student currently selected Student object
+	* @param event click event on the table cell ('td')
+	*/
+	function onRowSelect(student, event, tableSelector) {
+
+		// Highlight the selected row. Table is single select, so any previously
+		// selected rows must have highlighting removed.
+		// Find the row ('tr') which is the parent of the cell.
+		var theRow = $(event.target).parent();
+		// Remove highlighting on any previously selected rows.
+		$(tableSelector + " tr").removeClass("row-selected");
+		// Add highlighting to this row.
+		theRow.addClass("row-selected");
+		
+		// Capture the selected element -- Datatables destroys and recreates
+		// the rows on redraw, so you need to track it yourself.
+		selectedIdx = student.studentId;
+		//var table = $("#example"); // html dom obj is table[0]
+		   
+		var fullName = student.firstName + " " + student.lastName;
+	    var isStudentExternal = student.external;
+	    
+	    // Update the detail panel.
+	 //   document.getElementById("studentName").textContent = fullName;
+	 //   document.getElementById("studentExternal").textContent = isStudentExternal ? "Yes" : "No";
+	}
+})();         // End scoping function
+
+/*]]>*/
+</script>
+</body>
+</html>

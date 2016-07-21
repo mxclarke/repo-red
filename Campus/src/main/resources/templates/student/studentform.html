@@ -1,0 +1,191 @@
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+>
+<head lang="en">
+
+<title>Campus app</title>
+
+<!--/*/ <th:block th:include="fragments/headerincludes :: head"></th:block> /*/-->
+
+<!-- The following two ensure Bootstrap styling for the datatable -->
+<link rel="stylesheet"
+	th:href="@{/webjars/datatables/1.10.11/css/dataTables.bootstrap.min.css}" />
+<link rel="stylesheet"  th:href="@{/css/datatables/responsive.bootstrap.min.css}"/>	
+
+</head>
+<body>
+
+	<!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
+
+	<section class="mxcContainer">
+ 
+ 	<form th:object="${student}" th:action="@{/student/update/{path}(path=${id})}" method="post">
+	
+		<input type="hidden" th:field="*{id}"/>
+		<input type="hidden" th:field="*{userId}"/>
+		
+		<div sec:authorize="hasRole('ROLE_Admin')">
+			<h2 th:text="*{'Update student ' + firstName + ' ' + lastName}">placeholder</h2>
+		</div>
+		<div sec:authorize="hasRole('ROLE_Student')">
+			<h2 th:text="*{'Update your details: ' + firstName + ' ' + lastName}">placeholder</h2>
+		</div>
+
+		<p><strong>Required</strong> fields are marked as <strong><abbr title="required" class="mxcErrorSymbol">*</abbr></strong></p>
+
+		<label>User ID:</label>
+		<span th:text="*{userId}">placeholder</span>
+		
+		<fieldset>
+			<legend>Personal details</legend>
+
+			<!-- Names are only updatable by admin, but if there is a form -->
+			<!-- error, we still want the names to be returned and displayed -->
+			<div sec:authorize="hasRole('ROLE_Student')">
+				<input type="hidden" th:field="*{firstName}"/>
+				<input type="hidden" th:field="*{lastName}"/>
+			</div>
+
+			<div sec:authorize="hasRole('ROLE_Admin')">
+<!-- 			<div class="mxcInputField" sec:authorize="hasRole('ROLE_Admin')"> -->
+			
+	            <div class="mxcInputField" >
+	            	<label for="firstName">First Name:</label> 
+	            	<input id="firstName" type="text"  th:field="*{firstName}" />
+	            	<strong><abbr title="required" class="mxcErrorSymbol">*</abbr></strong>
+	            </div> 
+            	<div th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}" class="mxcError">Name Error</div>
+ 
+<!--               <div class="mxcInputField" sec:authorize="hasRole('ROLE_Admin')"> -->
+ 
+            	 <div class="mxcInputField" >
+            		<label for="lastName">Last Name:</label> 
+<!--             	<input id="lastName" type="text"  th:field="*{lastName}" required="required" /> -->
+             		<input id="lastName" type="text"  th:field="*{lastName}" />
+            		<strong><abbr title="required" class="mxcErrorSymbol">*</abbr></strong> 	
+            	</div>
+            <div th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" class="mxcError">Name Error</div>
+           </div>
+           
+             <div class="mxcInputField">
+            	<label for="emailAddress">Email:</label> 
+<!--             	<input id="emailAddress" type="email"  th:field="*{emailAddress}" required="required"/> -->
+             	<input id="emailAddress" type="text"  th:field="*{emailAddress}" />
+            	<strong><abbr title="required" class="mxcErrorSymbol">*</abbr></strong>
+            </div>
+            <div th:if="${#fields.hasErrors('emailAddress')}" th:errors="*{emailAddress}" class="mxcError">Error</div>
+            
+            <div class="mxcInputField">
+            	<label for="external">External?</label> 
+           		<input id="external" type="checkbox"  th:field="*{external}"></input>
+            </div>
+ 		</fieldset>
+            
+		<fieldset>
+			<legend>Payment details</legend>
+			
+            <div class="mxcInputField">
+            	<label for="amountPaid">Paid so far:</label> 
+            	<input id="amountPaid" sec:authorize="hasRole('ROLE_Admin')" th:field="*{amountPaid}" type="number" min="-1000.00" step="0.01" max="100000" value="0.0" />
+            	<span id="amountPaid" sec:authorize="hasRole('ROLE_Student')" th:text="*{amountPaid}">Placeholder</span>
+            	<input type="hidden" sec:authorize="hasRole('ROLE_Student')" th:field="*{amountPaid}"/>
+            </div>
+            <div sec:authorize="hasRole('ROLE_Admin')" th:if="${#fields.hasErrors('amountPaid')}" 
+            	th:errors="*{amountPaid}" class="mxcError">Error</div>
+ 		</fieldset>
+  
+		<fieldset>
+			<legend>Courses</legend>
+			
+			<!-- The body of the table requires binding on EACH field, even though they're not editable, -->
+			<!-- because if there's an error on the form it needs to come back from the server with all -->
+			<!-- those fields still displayed. -->
+			<table id="coursesTable" class="table table-striped table-bordered dt-responsive nowrap" 
+					cellspacing="0" width="100%">
+				<thead>
+            		<tr>
+                		<th></th>
+                		<th>Name</th>
+                		<th>Cost</th>
+                		<th>Description</th>
+            		</tr>
+        		</thead>
+        		<tbody>
+					<tr th:each="course, enrolmentStat : *{enrolments}">
+        					<td><input type="checkbox" th:field="*{enrolments[__${enrolmentStat.index}__].enrolled}"
+        						th:value="${course.enrolled}" />
+        						<input type="hidden" th:field="*{enrolments[__${enrolmentStat.index}__].id}"/>
+        						</td>
+<!--         					<td th:text="${course.name}"/> -->
+							<td>
+								<span th:text="${course.name}" th:field="*{enrolments[__${enrolmentStat.index}__].name}"></span>
+								<input type="hidden" th:field="*{enrolments[__${enrolmentStat.index}__].name}"></input>
+							</td>
+<!--         					<td th:text="${course.name}"> -->
+<!--         					<input type="hidden" th:field="*{enrolments[__${enrolmentStat.index}__].name}"/> -->
+<!--         					</td> -->
+							<td>
+								<span th:text="${course.cost}" th:field="*{enrolments[__${enrolmentStat.index}__].cost}"></span>
+								<input type="hidden" th:field="*{enrolments[__${enrolmentStat.index}__].cost}"></input>
+							</td>
+<!--         					<td th:text="${course.cost}" th:field="*{enrolments[__${enrolmentStat.index}__].cost}">cost placeholder</td> -->
+        					<td>
+								<span th:text="${course.description}" th:field="*{enrolments[__${enrolmentStat.index}__].description}"></span>
+								<input type="hidden" th:field="*{enrolments[__${enrolmentStat.index}__].description}"></input>
+							</td>
+<!--         					<td th:text="${course.description}" th:field="*{enrolments[__${enrolmentStat.index}__].description}">descirption</td> -->
+        				</tr>
+        		</tbody>
+        	</table>
+ 
+<!-- </div> -->
+
+		</fieldset>
+ 
+		<div class="editSubmit">
+			<input type="submit" value="Save"/>
+		</div>
+	</form>
+            
+</section>
+
+<!--/*/ <th:block th:include="fragments/footer :: footer"></th:block> /*/-->
+	
+<script th:src="@{/webjars/datatables/1.10.11/js/jquery.dataTables.min.js}"></script>
+<!-- Bootstrap styling for datatable -->	
+<script th:src="@{/webjars/datatables/1.10.11/js/dataTables.bootstrap.min.js}"></script>
+	
+<script th:src="@{/webjars/datatables.net-responsive/2.0.2/js/dataTables.responsive.min.js}"></script>
+<!-- Bootstrap styling for datatable -->
+<script th:src="@{/js/datatables/responsive.bootstrap.min.js}"></script>
+
+<script>
+
+/* Create an array with the values of all the checkboxes in a column */
+ 
+$.fn.dataTable.ext.order['dom-checkbox'] = function  ( settings, col ) {
+    return this.api().column( col, {order:'index'} ).nodes().map( function ( td, i ) {
+        return $('input', td).prop('checked') ? '1' : '0';
+    } );
+}
+
+function setUpCourses() {
+	// The paging is switched off because we are modifying the table and DT won't send
+	// data from non-visible pages back to the server.
+    $('#coursesTable').DataTable( {
+		paging: false,
+        columnDefs: [ {targets: 0, searchable: false, orderDataType: "dom-checkbox"},
+        			{targets: 1, type: "natural"}
+        ],
+        order: [[ 0, 'desc' ]]
+    } );
+}
+
+$(document).ready(function() {	
+	setUpCourses();
+} );
+
+</script>
+</body>
+
+</html>

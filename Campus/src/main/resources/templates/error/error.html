@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+
+<title>Campus app</title>
+
+<!--/*/ <th:block th:include="fragments/headerincludes :: head"></th:block> /*/-->
+
+</head>
+<body>
+
+	<th:block th:include="fragments/header :: header"></th:block>
+	
+	<section class="mxcContainer">
+	
+		<div>
+			<p th:text="${'An error occurred in the server at ' + datetime + ' for URL ' + url + ':'}">placeholder</p>
+			
+			<p th:text="${exception}">placeholder</p>
+<!-- 			<p th:text="${exception.getMessage()}">placeholder</p> -->
+			
+			<p>In a real app we would also supply an optional reporting button, 
+			which would perhaps email these details off to the relevant party.</p>
+		</div>
+
+	</section>
+	
+	<th:block th:include="fragments/footer :: footer"></th:block>
+	
+</body>
+
+</html>

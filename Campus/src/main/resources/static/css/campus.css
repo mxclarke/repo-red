@@ -1,0 +1,177 @@
+/* Stylesheet for Master Detail Paging app */
+
+/* Apparently need this for the responsive table w Ajax */
+/* TODO get rid of it?? */
+div.container {
+	max-width: 1200px
+}
+
+/* For responsive layouts */
+/* Ensure that the padding and border are included in the total width and height of the elements. */
+* {
+	box-sizing: border-box;
+}
+
+/* Every main section except nav will have a dark blue border, with bg colour white.
+   All main sections will have 10 px for each of the top, left and right margins,
+   while the footer will define its bottom margin as 10 px. When the nav is
+   present, its top margin will be zero so that it sits directly beneath the
+   header.
+   Padding for all main sections except nav is 10 px.
+ */
+header, nav, footer, .mxcContainer {
+	margin: 10px 10px 0px;
+	background-color: white;
+}
+
+footer {
+	margin-bottom: 10px;
+}
+
+nav {
+	margin-top: 0px;
+}
+
+header, footer, .mxcContainer {
+	border: 1px solid DarkBlue;
+	padding: 10px;
+}
+
+/* . . . except for the header and footer, whose backgrounds will be dark blue with
+   white text, and whose bottom margins will be 10px.
+*/
+header, footer {
+	color: white;
+	background-color: DarkBlue;
+}
+/* The main heading will be centred. */
+header {
+	text-align: center;
+}
+
+.ui-datepicker .ui-datepicker-title select {
+	color: #000;
+}
+
+/* The following is needed when there's a menu (nav) */
+.mxcContainer {
+	clear: both;
+}
+
+footer {
+	font-size: 0.75em;
+	font-style: italic;
+	text-align: right;
+	position: relative;
+	clear: both;
+}
+
+/* The following helps us get the border sticking to the bottom of the page, even if
+   there's not much content. Also when you are floating elements you should always
+   define the margin and padding in the body, to avoid differences between browsers
+   such as earlier versions of IE.
+*/
+html, body {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+/* This is also needed for the sticky footer. */
+section {
+	min-height: -webkit-calc(100% - 200px); /* Chrome */
+	min-height: -moz-calc(100% - 100px); /* Firefox */
+	min-height: calc(100% - 100px); /* native */
+}
+
+.mxcHeaderArea {
+	text-align: right;
+}
+
+.mxcHeaderUserArea {
+	font-size: 0.75em;
+	text-align: right;
+}
+
+/* No line break before the signout form on the header. */
+.mxcHeaderForm {
+	display: inline;
+	padding-left: 10px;
+	color: red;
+	font-size: 1em;
+	font-weight: bold;
+}
+
+.mxclogin {
+	padding: 20px;
+}
+
+.mxcInputField {
+	margin: 5px;
+}
+
+.mxcInputField label {
+	display: inline-block;
+	width: 100px;
+}
+
+.mxcInputField input {
+	display: inline-block;
+}
+/* Centre the form, and the "invalid login" message. */
+.mxcInputField, .mxcLoginSubmit, .mxcMessage {
+	display: -webkit-flex; /* Safari */
+	display: flex;
+	-webkit-justify-content: center; /* Safari 6.1+ */
+	justify-content: center;
+}
+
+.mxcLoginSubmit {
+	padding-top: 30px;
+}
+
+.mxcError, .mxcErrorSymbol {
+	color: #ff0000;
+	font-style: italic;
+	font-weight: bold;
+	padding: 0 0.2em;
+}
+
+.mxcErrorSymbol {
+	font-size: 1.5em;
+}
+
+/* Make the "invalid login" message a little more prominent. */
+.mxcMessageText {
+	border: 1px solid red;
+	margin: 10px;
+	padding: 10px;
+	font-size: 1.5em;
+	font-weight: bold;
+}
+
+/* Centre the main button on the index page using CSS3 flexbox. */
+.mxcMainButton {
+	display: -webkit-flex; /* Safari */
+	display: flex;
+	-webkit-justify-content: center; /* Safari 6.1+ */
+	justify-content: center;
+	padding: 10px;
+	color: DarkBlue;
+}
+/* Override JQuery button settings. */
+.ui-button {
+	color: red;
+}
+
+/* Colour for the selected row of student */
+.row-selected {
+	background-color: #e6e6e6 !important;
+}
+
+/* Styling for the table filtering on each column */
+tfoot input {
+	width: 100%;
+	padding: 3px;
+	box-sizing: border-box;
+}

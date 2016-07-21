@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>mxc.demo</groupId>
+	<artifactId>campus</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
+	<name>Campus Project</name>
+	<description>Example project with Spring Boot, Spring Data, Thymeleaf and JQuery</description>
+
+	<!-- Inherit defaults from Spring Boot -->
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.3.6.RELEASE</version>
+	</parent>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java.version>1.8</java.version>
+		<com.mysema.querydsl.version>3.7.2</com.mysema.querydsl.version>
+		<com.mysema.maven.apt-maven-plugin.version>1.1.3</com.mysema.maven.apt-maven-plugin.version>
+		<org.webjars.bootstrap.version>3.3.4</org.webjars.bootstrap.version>
+		<org.webjars.jquery.version>2.2.3</org.webjars.jquery.version>
+		<org.webjars.jquery-ui.version>1.11.4</org.webjars.jquery-ui.version>
+<!-- 		<org.seleniumhq.selenium.selenium-java.version>2.53.0</org.seleniumhq.selenium.selenium-java.version> -->
+		<org.seleniumhq.selenium.selenium-java.version>2.53.1</org.seleniumhq.selenium.selenium-java.version>
+
+		<org.webjars.datatables.version>1.10.11</org.webjars.datatables.version>
+		<spring-data-releasetrain.version>Fowler-SR2</spring-data-releasetrain.version>
+	</properties>
+
+	<dependencies>
+
+		<!-- Note: Selenium inclusion of xml-apis version 1.4.01 was being omitted due to  -->
+		<!-- version 1.0.b2 from spring-boot-starter-jpa. I have excluded the old version -->
+		<!-- from spring-boot-starter-data-jpa, and below it included it again because -->
+		<!-- Selenium will only be on class path in test scope.  -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+			<exclusions>
+				<exclusion>
+					<artifactId>xml-apis</artifactId>
+					<groupId>xml-apis</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/xml-apis/xml-apis -->
+<!-- 		<dependency> -->
+<!-- 		    <groupId>xml-apis</groupId> -->
+<!-- 		    <artifactId>xml-apis</artifactId> -->
+<!-- 		    <version>1.4.01</version> -->
+<!-- 		</dependency> -->
+<!-- https://mvnrepository.com/artifact/xml-apis/xml-apis -->
+<!-- <dependency> -->
+<!--     <groupId>xml-apis</groupId> -->
+<!--     <artifactId>xml-apis</artifactId> -->
+<!--     <version>2.0.2</version> -->
+<!-- </dependency> -->
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.thymeleaf.extras</groupId>
+			<artifactId>thymeleaf-extras-springsecurity4</artifactId>
+<!-- 			<version>3.0.0.RELEASE</version> -->
+		</dependency>
+
+
+		<!-- Dependency spring-boot-starter-web automatically configures Spring 
+			MVC -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<!-- You might also need this, e.g. for classes such as RepositoryEventHandler  -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.springframework.boot</groupId> -->
+<!-- 			<artifactId>spring-boot-starter-data-rest</artifactId> -->
+<!-- 		</dependency> -->
+    
+		<!-- Need this for projections -->
+		<dependency>
+		  <groupId>com.fasterxml.jackson.module</groupId>
+		  <artifactId>jackson-module-mrbean</artifactId>
+		  <version>2.5.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<!-- Selenium web driver for UI testing. -->
+		<!-- http://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java -->
+		<dependency>
+    		<groupId>org.seleniumhq.selenium</groupId>
+    		<artifactId>selenium-java</artifactId>
+    		<version>${org.seleniumhq.selenium.selenium-java.version}</version>
+<!--     		<scope>test</scope> -->
+		</dependency>
+		
+		<!-- http://mvnrepository.com/artifact/org.joda/joda-money -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.joda</groupId> -->
+		<!-- <artifactId>joda-money</artifactId> -->
+		<!-- <version>0.11</version> -->
+		<!-- </dependency> -->
+
+		<!-- Using JSR 354 for money handling, expected to be part of Java 9 -->
+		<!-- THe following dependency will add javax.money:money-api as its own 
+			dependency -->
+
+		<dependency>
+			<groupId>org.javamoney</groupId>
+			<artifactId>moneta</artifactId>
+			<version>1.0</version>
+		</dependency>
+
+		<!-- We need QueryDSL so that our repository can filter as well as page 
+			and sort. -->
+		<!-- http://mvnrepository.com/artifact/com.mysema.querydsl/querydsl-jpa -->
+		<!-- The following by itself is not sufficient, since we need to get Maven 
+			to create -->
+		<!-- the query types on compilation. These query types are based on our 
+			own domain -->
+		<!-- classes such as @Entity classes. To do this we need to add the Maven 
+			APT plugin. -->
+		<!-- See below in the plugins section. . . . -->
+		<!-- See also here http://www.petrikainulainen.net/programming/spring-framework/spring-data-jpa-tutorial-part-five-querydsl/ -->
+		<!-- and here https://arthurportas.wordpress.com/2016/03/13/sample-spring-data-jpa-query-with-querydsl/ -->
+		<dependency>
+			<groupId>com.mysema.querydsl</groupId>
+			<artifactId>querydsl-apt</artifactId>
+			<version>${com.mysema.querydsl.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.mysema.querydsl</groupId>
+			<artifactId>querydsl-jpa</artifactId>
+			<version>${com.mysema.querydsl.version}</version>
+		</dependency>
+		
+		<!--WebJars -->
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>bootstrap</artifactId>
+			<version>${org.webjars.bootstrap.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>jquery</artifactId>
+			<version>${org.webjars.jquery.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>jquery-ui</artifactId>
+			<version>${org.webjars.jquery-ui.version}</version>
+		</dependency>
+		
+		<!-- JQuery datatables, so we can easily create better tables, see https://datatables.net/ -->
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>datatables</artifactId>
+			<version>${org.webjars.datatables.version}</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.webjars.bower/datatables.net-responsive-zf -->
+<!-- <dependency> -->
+<!--     <groupId>org.webjars.bower</groupId> -->
+<!--     <artifactId>datatables.net-responsive-zf</artifactId> -->
+<!--     <version>2.1.0</version> -->
+<!-- </dependency> -->
+		
+		<!-- http://mvnrepository.com/artifact/org.webjars.bower/datatables.net-responsive -->
+<!-- 		This should be v 2.1.0 -->
+		<dependency>
+		    <groupId>org.webjars.bower</groupId>
+		    <artifactId>datatables.net-responsive</artifactId>
+		    <version>2.0.2</version>
+		</dependency>
+		
+		<!-- http://mvnrepository.com/artifact/org.webjars/momentjs -->
+		<!-- THis is required for dates in footables -->
+		<dependency>
+		    <groupId>org.webjars</groupId>
+		    <artifactId>momentjs</artifactId>
+		    <version>2.13.0</version>
+		</dependency>
+
+	</dependencies>
+
+	<!-- Now for the build plugins. -->
+	<!-- The Spring Boot Maven plugin a) collects all the jars -->
+	<!-- on the classpath into a single, easily transportable jar; -->
+	<!-- b) searches for public static void main() to run; -->
+	<!-- c) provides a built-in dependency resolver that sets the -->
+	<!-- version numbers to match Spring BOot dependencies, which you -->
+	<!-- can override if you wish. -->
+	<!-- For build configuration I also used: -->
+	<!-- 1) the apt-maven-plugin to generate the QueryDSL sources -->
+	<!-- 2) build-helper-maven-plugin to add the (generated) source directory 
+		to the build -->
+	<!-- 3) some boilerplate plugin management to get around an m2e problem 
+		in plugins such as (2). -->
+	<!-- Specifically, you'll get an error in your POM along the lines of -->
+	<!-- "plugin execution not covered by lifecycle configuration". -->
+	<!-- To sort this out in similar situations: -->
+	<!-- a) put your cursor just above the end-build tag (i.e. where you want -->
+	<!-- your plugin management to go) -->
+	<!-- b) click on the error -->
+	<!-- c) Ctrl-1 for "quick fix" -->
+	<!-- d) choose "Permanently mark goal run in pom.xml as ignored in Eclipse 
+		build" -->
+	<!-- e) wait for the boilerplate to be generated -->
+	<!-- f) replace the ignore tag with execute tag g) consider adding runOnIncremental 
+		tag inside the execute tag, with the following contents: false|true This 
+		allegedly causes eclipse call this maven plugin on incremental builds -->
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+
+			<!-- HEre we are configuring a JPAAnnotationProcessor, so that on compilation 
+				it will generate -->
+			<!-- QueryDSL query types to the target/generated-sources/apt directory 
+				in our project. -->
+			<!-- For example, if we have an entity called Employee, a QEmployee class 
+				will be created. -->
+			<!-- NOTE: thanks to an Eclipse issue you will now see an error in your 
+				POM. You have -->
+			<!-- to modify the eclipse.ini file. See this project's readme file for 
+				more details. -->
+			<plugin>
+				<groupId>com.mysema.maven</groupId>
+				<artifactId>apt-maven-plugin</artifactId>
+				<version>${com.mysema.maven.apt-maven-plugin.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>process</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>target/generated-sources/apt</outputDirectory>
+							<processor>com.mysema.query.apt.jpa.JPAAnnotationProcessor</processor>
+						</configuration>
+					</execution>
+				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>com.mysema.querydsl</groupId>
+						<artifactId>querydsl-apt</artifactId>
+						<version>${com.mysema.querydsl.version}</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>target/generated-sources/apt</source>
+								<source>target/generated-sources/annotations/</source>
+							</sources>
+						</configuration>
+					</execution>
+
+				</executions>
+			</plugin>
+			
+<!-- <plugin> -->
+<!--       <groupId>org.apache.maven.plugins</groupId> -->
+<!--       <artifactId>maven-failsafe-plugin</artifactId> -->
+<!--       <configuration> -->
+<!--         <classpathDependencyExcludes> -->
+<!--           <classpathDependencyExcludes> -->
+<!--             xml-apis:1.0.b2 -->
+<!--           </classpathDependencyExcludes> -->
+<!--         </classpathDependencyExcludes> -->
+<!--       </configuration> -->
+<!--     </plugin> -->
+
+		</plugins>
+
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.codehaus.mojo
+										</groupId>
+										<artifactId>
+											build-helper-maven-plugin
+										</artifactId>
+										<versionRange>
+											[1.9.1,)
+										</versionRange>
+										<goals>
+											<goal>add-source</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<execute>
+										</execute>
+
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
+</project>

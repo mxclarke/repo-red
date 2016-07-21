@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+>
+<head lang="en">
+</head>
+<body>
+
+	<!-- The header fragment should be included at the top of every page. -->
+	<!-- It displays a heading, a login button where appropriate, and -->
+	<!-- otherwise the user's details with a logout button. -->
+	<!-- For the special case of the login page, where you don't want the -->
+	<!-- header to show the login button, pass the variable "isLogon" -->
+	<!-- to this fragment. The variable contents do not matter. -->
+	<div th:fragment="header">
+		<header id="mxcHeaderId">
+		
+			<h1>Campus Example with Spring Boot</h1>
+					
+            <div class="mxcHeaderArea" sec:authorize="isAuthenticated()">
+            	<span class="mxcHeaderUserArea">
+            		User <span id="mxcHeaderUsername" sec:authentication="principal.username">none</span>
+               		(<span id="mxcHeaderRole" sec:authentication="principal.authorities">roles</span>)
+               </span>
+				<form id = "mxcHeaderLogoutButton" class="mxcHeaderForm" th:action="@{/logout}" method="post">
+					<input class="mxcHeaderBn" type="submit" value="Sign Out"/>
+				</form>
+			</div>
+
+			<!-- We only show the login button (a) if this page is not the login page -->
+			<!-- (the login page must supply the isLogon parameter) and  -->
+			<!-- (b) the current user is anonymous.  -->
+			<div class="mxcHeaderArea" th:if="${isLogon == null}" sec:authorize="isAnonymous()">
+  				<form class="mxcHeaderForm" th:action="@{/login}" method="get">
+					<input class="mxcHeaderBn" type="submit" value="Sign In"/>
+				</form>
+			</div>
+
+		</header>	
+	</div>
+
+</body>
+</html>

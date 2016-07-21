@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+
+<title>Campus Access Denied</title>
+
+<!--/*/ <th:block th:include="fragments/headerincludes :: head"></th:block> /*/-->
+
+</head>
+<body>
+	<!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
+
+	<section class="mxcContainer">
+	<h1>Access denied</h1>
+	
+	<p>You have been denied access. Please contact the administrators etc etc</p>
+
+<div class="mxcMainButton">
+			<a id="campushome" th:href="@{/}">Home</a>
+		</div>
+	</section>
+
+	<!--/*/ <th:block th:include="fragments/footer :: footer"></th:block> /*/-->
+
+<script>
+  $(function() {
+    $( "input[type=submit], a, button" )
+      .button();
+  });
+</script>
+</body>
+</html>

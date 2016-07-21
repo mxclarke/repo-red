@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+
+<title>Campus app</title>
+
+<!--/*/ <th:block th:include="fragments/headerincludes :: head"></th:block> /*/-->
+
+</head>
+<body>
+
+	<th:block th:include="fragments/header :: header"></th:block>
+	
+	<section class="mxcContainer">
+
+		<p th:text="#{home.welcome}">Welcome text.</p>
+		
+		<p>This application is under construction. . . .</p>
+		
+		<p>To use this application, you can log in as a student or an administrator.
+		Each of these will take you to a different landing page. Lecturers will be 
+		included in the future.</p>
+		
+		<p>To log in as an administrator, apply user-name "adminUser" with password "admin".</p>
+		
+		<p>To log in as a student, check the console on startup to see a number of student user IDs. 
+		To construct each student's password, simply prepend the user ID with "pw".</p>
+		
+		<p>For example:
+		<ul>
+		<li>Julie Banks: user-name = "jebs", password = "pwjebs".</li>
+		<li>Ashara Singh: user=name = "aash", password = "pwaash".</li>
+		<li>Richard Hope: user-name = "rdhe", password = "pwrdhe".</li>
+		</ul>
+		</p>
+		
+	</section>
+	
+	<th:block th:include="fragments/footer :: footer"></th:block>
+	
+
+</body>
+
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head lang="en">
+
+<title>Student</title>
+
+<!--/*/ <th:block th:include="fragments/headerincludes :: head"></th:block> /*/-->
+
+<style>
+
+.mxcControl {
+/* 	width: 200px; */
+/* 	border: 1px solid #c3c3c3; */
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-align-content: center;
+    align-content: center;
+
+}
+.mxcControl form input {
+	width: 200px;
+	padding: 5px;
+	margin-top: 7px;
+}
+</style>
+</head>
+<body>
+	<!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
+
+	<section class="mxcContainer">
+	
+		<!-- There might be an update message if this is a landing page after editing. -->
+		<div th:if="${updateMessage != null}" class="mxcMessage">
+			<p th:text="${updateMessage}" class="mxcMessageText"/>
+		</div>
+		
+		<input type="hidden" th:field="${student.id}"/>
+	
+		<div sec:authorize="hasRole('ROLE_Student')">
+			<h2 th:text="${'Welcome, ' + student.firstName + ' ' + student.lastName}">placeholder</h2>
+		</div>
+		<div sec:authorize="hasRole('ROLE_Admin')">
+			<h2 th:text="${'Student view: ' + student.firstName + ' ' + student.lastName}">placeholder</h2>
+		</div>
+		
+		<div class="mxcControl">
+		<form th:action="@{/student/edit/{path}(path=${student.id})}" method="post" >
+		    <input type="submit" value="Edit details"/>
+		</form>
+		</div>
+		
+		<div class="mxcControl">
+		<form th:action="@{/changePassword/{path}(path=${student.id})}" method="post" >
+		    <input type="submit" value="Change password"/>
+		</form>
+		</div>
+		
+		<!-- TODO make the confirmatiom msg a proper jQuery overlay -->
+		<div sec:authorize="hasRole('ROLE_Admin')" class="mxcControl">
+			<form th:action="@{/student/delete/{path}(path=${student.id})}" method="post" 
+			onsubmit="return confirm('Permanently delete this student?')">
+			    <input type="submit" value="Delete"/>
+			</form>
+		</div>
+		
+		<div sec:authorize="hasRole('ROLE_Student')">
+			<h3>Your details</h3>
+		</div>
+		<div sec:authorize="hasRole('ROLE_Admin')">
+			<h3>Student's details</h3>
+		</div>
+	
+	<!-- Note: the output tag is not currently supported in IE/Edge, so we will -->
+	<!-- have to limit ourselves to span -->
+
+	 <ul>
+		 <li th:text="${'Login ID: ' + student.userId}"></li>
+		 <li th:text="${'Email: ' + student.emailAddress}"></li>
+		 <li>External: <span th:text="${student.external} ? 'YES' : 'NO'"></span></li>
+		 <li th:text="${'Paid so far: $' + student.amountPaid}"></li>
+		 <li>Total cost: <span id="totalCost"></span></li>
+		 <li>Amount owing: <span id="amountOwing"></span></li>		 
+	 </ul>
+
+	<h3>Enrolled courses</h3>
+	
+	<ul th:each="course: ${student.courses}">
+		<li><span th:text="${course.name}"></span>: <span th:text="${'$' + course.cost}"></span></li>
+	</ul>
+	
+	</section>
+
+	<!--/*/ <th:block th:include="fragments/footer :: footer"></th:block> /*/-->
+
+<script th:inline="javascript">
+/*<![CDATA[*/
+// <li>Total cost: <span id="totalCost"></span></li>
+// <li>Amount owing: <span id="amountOwing"></span></li>
+$(document).ready(function() {
+	var i = 0;
+	var courses = /*[[${student.courses}]]*/ 'placeholder';
+	var amountPaid = /*[[${student.amountPaid}]]*/ 'placeholder';
+	var len = courses.length;
+	var total = 0;
+	var amountOwing = 0;
+		
+	// Initialise the delete-confirm dialog.
+//   	$("#confirmDialog").dialog({autoOpen : false, modal : true, title : "Confirm deletion", 
+//   			show : "blind", hide : "blind"});
+	
+	for ( ; i < len; i++ ) {
+		total += courses[i].cost;
+	}
+	amountOwing = total - amountPaid;
+	
+	total = roundFixed(total, 2);
+	amountOwing = roundFixed(amountOwing, 2);
+	
+	document.getElementById("totalCost").innerHTML = "$" + total;
+	
+	document.getElementById("amountOwing").innerHTML = "$" + amountOwing;
+	///$("#amountOwing")[0].innerHTML = "$" + amountOwing;
+});
+
+function round(Number, DecimalPlaces) {
+	return Math.round(parseFloat(Number) * Math.pow(10, DecimalPlaces)) / Math.pow(10, DecimalPlaces);
+}
+
+function roundFixed(Number, DecimalPlaces) {
+	return round(Number, DecimalPlaces).toFixed(DecimalPlaces);
+}
+//   $(function() {
+//     $( "input[type=submit], a, button" )
+//       .button();
+//   });
+/*]]>*/
+</script>
+</body>
+</html>

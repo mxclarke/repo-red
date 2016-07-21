@@ -1,0 +1,112 @@
+#theBurgerReal {
+	width: 30px;
+	/* 	leave height as auto to maintain aspect-ratio */
+}
+
+/* styling for nav ul li a */
+nav {
+	overflow: hidden;
+}
+
+nav ul {
+	margin: 0;
+	padding: 0;
+	background-color: #2020ff;
+}
+
+nav ul li {
+	/* This allow us to arrange list items in a row, without using float */
+	display: inline-block;
+	list-style-type: none; /* no bullets */
+	width: 20%;
+	padding: 0;
+	margin: 0;
+}
+
+/* This style applies to the first-level items only. */
+/* display: block; - Displaying the links as block elements makes the whole link area  */
+/* clickable (not just the text), and it allows us to specify the width (and padding,  */
+/* margin, height, etc. if you want) */
+nav>ul>li>a {
+	color: white;
+	background-color: #2020ff;
+	font-size: 1.2em;
+	font-style: bold;
+	display: block;
+	line-height: 2em;
+	padding: 0.5em 0.5em;
+	text-decoration: none;
+	text-align: center;
+	transition: 0.3s;
+}
+
+/* Change the link color on desktop hover, unless it's the current selection. */
+nav li a:hover:not (.active ) {
+	background-color: #6a6aff;
+	color: DarkBlue;
+}
+/* Also let the user know what page they're on */
+/* This works when you add an "active" class to the one the user has activated. */
+nav li a.active {
+	background-color: DarkBlue;
+	color: white;
+	border: 2px solid #6a6aff;
+}
+/* However, when the hamburger icon (fa-bars) has been activated, it gets the default
+   Bootstrap colour, grey. We have to override that.
+ */
+nav ul li.icon a:active, nav ul li.icon a:focus {
+	color: white !important;
+}
+
+/* ANd to remove the dotted outline. That is there for accessibility purposes.
+    However, this icon is only meant to be displayed on mobile devices. */
+nav ul li.icon a {
+	outline: none;
+}
+
+nav ul {
+	border-top: 1px solid white;
+}
+
+/* Responsive behaviour. */
+/* Hide the list item that contains the link that should open and close the topnav on small screens */
+ul li.icon {
+	display: none;
+}
+
+/* When the screen is less than 680 pixels wide, hide all list items, except for the first one ("Home"). 
+  Show the list item that contains the link to open and close the nav (li.icon) */
+@media screen and (max-width:680px) {
+	nav ul li:not (:first-child ) {
+		display: none;
+	}
+	nav ul li.icon {
+		float: right;
+		display: inline-block;
+	}
+}
+
+/* The "responsive" class is added to the nav with JavaScript when the user clicks on 
+   the icon. This class makes the nav look good on small screens */
+@media screen and (max-width:680px) {
+	nav ul.responsive {
+		position: relative;
+	}
+	nav ul.responsive li.icon {
+		position: absolute;
+		right: 0;
+		top: 0;
+	}
+	nav ul.responsive li {
+		float: none;
+		display: inline;
+	}
+	nav ul.responsive li a {
+		display: block;
+		text-align: left;
+	}
+	nav ul.responsive li.icon a {
+		text-align: center;
+	}
+}

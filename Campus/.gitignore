@@ -1,0 +1,14 @@
+.project
+.classpath
+.settings/
+target/
+build/
+bin/
+WebContent/
+*.tmp
+*.log
+*.log*
+*.bak
+/Users/
+**/MANIFEST.MF
+notes.txt

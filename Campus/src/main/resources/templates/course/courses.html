@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+
+<title>Campus app</title>
+
+<!--/*/ <th:block th:include="fragments/headerincludes :: head"></th:block> /*/-->
+
+</head>
+<body>
+
+<div class="container">
+    
+    <div th:if="${not #lists.isEmpty(courses)}">
+        <h2> List</h2>
+        <table class="table table-striped">
+            <tr>
+                <th>Id</th>
+
+                <th>Name</th>
+                <th>Description</th>
+                <th>Cost</th>
+   
+                  <th>View</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+            <tr th:each="course : ${courses}">
+                <td th:text="${course.id}"><a href="/course/${course.id}">Id</a></td>
+                <td th:text="${course.name}">C Id</td>
+                <td th:text="${course.description}">descirption</td>
+                <td th:text="${course.cost}">cost placeholder</td>
+               
+                <td><a th:href="${'/course/' + course.id}">View</a></td>
+                <td><a th:href="${'/course/edit/' + course.id}">Edit</a></td>
+                <td><a th:href="${'/course/delete/' + course.id}">Delete</a></td>
+            </tr>
+        </table>
+ 
+    </div>
+</div>
+
+</body>
+
+</html>

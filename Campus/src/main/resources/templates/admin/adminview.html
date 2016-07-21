@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+
+<title>Administration</title>
+
+<!--/*/ <th:block th:include="fragments/headerincludes :: head"></th:block> /*/-->
+
+<script th:src="@{/webjars/datatables/1.10.11/js/jquery.dataTables.min.js}"></script>
+<!-- Bootstrap for datatable -->	
+<script th:src="@{/webjars/datatables/1.10.11/js/dataTables.bootstrap.min.js}"></script>
+	
+<!-- Responsive datatables -->
+<script th:src="@{/webjars/datatables.net-responsive/2.0.2/js/dataTables.responsive.min.js}"></script>
+<script th:src="@{/js/datatables/responsive.bootstrap.min.js}"></script>
+
+<!-- The following two ensure Bootstrap styling for the datatable -->
+<link rel="stylesheet" th:href="@{/webjars/datatables/1.10.11/css/dataTables.bootstrap.min.css}" />
+<link rel="stylesheet"  th:href="@{/css/datatables/responsive.bootstrap.min.css}"/>	
+	
+<script th:src="@{/webjars/momentjs/2.13.0/min/moment.min.js}"></script>
+	
+<link rel="stylesheet" type="text/css" th:href="@{/css/campusmenu.css}"
+		media="screen" />	
+		
+<link rel="stylesheet" type="text/css" th:href="@{/css/footable/footable.bootstrap.min.css}"
+		media="screen" />
+
+</head>
+<body>
+	<!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
+	
+	<!-- The admin menu (responsive) -->
+	<!-- This is very weird, but you'll get space between your inline-block -->
+	<!-- elements unless you write the list as I've done below. -->
+	<!-- See here: https://css-tricks.com/fighting-the-space-between-inline-block-elements/ -->
+	<!-- This is the soln that apparently works across the board. (Yet to be tested across the board.) -->
+	<nav>
+		<ul class="mxcMenu">
+			<li>
+			<a th:href="@{/}">Home</a></li><li>
+			<a href="#" class="active mxcMenuItem" id="studentsTab" onclick="openWorkSection('students')">Students</a></li><li>
+			<a href="#" class="mxcMenuItem" id="lecturersTab" onclick="openWorkSection('lecturers')">Lecturers</a></li><li>
+			<a href="#" class="mxcMenuItem" id="coursesTab" onclick="openWorkSection('courses')">Courses</a></li><li>
+			<a href="#" class="mxcMenuItem" id="settingsTab" onclick="openWorkSection('settings')">Settings</a></li>
+			<!-- The list item with class="icon" has a link that is used to open and close the nav on small screens. -->
+			  <li class="icon">
+			<a href="javascript:void(0);" onclick="mxcOnResponsiveMenuClick()" style="display: block; z-index: 1;">
+				<object id="theBurgerReal" data="/images/menu.svg" style="z-index: -1; pointer-events: none;" ></object>
+			</a> </li>			  
+		</ul>
+	</nav>
+	
+	<section class="mxcContainer">
+		
+	<!-- There might be an update message if this is a landing page after editing. -->
+	<div th:if="${updateMessage != null}" class="mxcMessage">
+		<p th:text="${updateMessage}" class="mxcMessageText"/>
+	</div>
+		
+	<h1 th:text="${'Administration: ' + campusName}">Campus placeholder</h1>
+			
+	<p>Welcome, administrator <span th:inline="text">[[${#httpServletRequest.remoteUser}]]</span></p>
+        
+<!--         <div class="mxcMainButton"> -->
+<!-- 			<a id="someotheradminpage" th:href="@{/admin/secondPage}">Other admin page</a> -->
+<!-- 		</div> -->
+
+		<section id="students" class="w3-container admin">
+			<h2>Students</h2>
+								
+				<!-- Insert the datatable. The display class is a shorthand for stripe,  -->
+				<!-- hover, row-border and order-column.  -->
+				<!-- The cell-border class will provide a border around each cell. -->
+				<!-- A real app would have additional optional columns, and would use a -->
+				<!-- hidden column for a unique ID to be used for selection and CRUD operations. -->
+				
+				<table id="studentsTable" class="table table-striped table-bordered dt-responsive nowrap" 
+					cellspacing="0" width="100%">
+				</table>
+				
+				<!-- Note that although the width attribute is deprecated for HTML5, it was  -->
+				<!-- necessary to get the responsive table working with Ajax. See here: -->
+				<!-- https://datatables.net/extensions/responsive/examples/initialisation/ajax.html -->
+				
+				<!-- The following works if you don't include the Bootstrap styling.	 -->
+				<!-- <table id="studentsTable" class="display responsive no-wrap" width="100%"></table> -->
+		
+		</section>
+		
+		<section id="lecturers" class="w3-container admin">
+			<h2>Lecturers</h2>
+			
+			<p>In this tab I experimented with Footables, as a possible replacement for JQuery Datatables.</p>
+			<p>I discovered that the Foo offering has a disadvantage in that it does not provide
+			server-side paging out of the box. For the sake of consistency you should stick to one
+			type of table. In the future I will be sticking to Datatables.</p>
+						
+			<!-- <table id="lecturersTable" class="table" data-filter="#lecturerName"> -->
+			<table id="lecturersTable" class="table" 
+				data-filtering="true" data-sorting="true" data-paging="true">
+			</table>
+		</section>
+		
+		<section id="courses" class="w3-container admin">
+			<h2>Courses</h2>
+			<a href="/course/new">Create </a>
+			
+			<div th:if="${not #lists.isEmpty(courses)}">
+				<table id="coursesTable" class="table table-striped">
+            		<tr>
+		                <th>Id</th>
+		                <th>Name</th>
+		                <th>Description</th>
+		                <th>Cost</th>
+		                 <th>View</th>
+		                <th>Edit</th>
+		                <th>Delete</th>
+            		</tr>
+            		
+            		<tr th:each="course : ${courses}">
+		                <td th:text="${course.id}"><a href="/course/${course.id}">Id</a></td>
+		                <td th:text="${course.name}">C Id</td>
+		                <td th:text="${course.description}">descirption</td>
+		                <td th:text="${course.cost}">cost placeholder</td>
+		            
+		                <td><a th:href="${'/course/' + course.id}">View</a></td>
+		                <td><a th:href="${'/course/edit/' + course.id}">Edit</a></td>
+		                <td><a th:href="${'/course/delete/' + course.id}">Delete</a></td>
+            		</tr>
+        		</table>
+ 
+    		</div>
+		</section>
+		
+		<section id="settings" class="w3-container admin">
+			<h2>Your settings</h2>
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
+			sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+			Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi 
+			ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit 
+			in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
+			Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia 
+			deserunt mollit anim id est laborum.</p>
+		</section>
+		
+<!-- 		<section id="notDisplayed" class="w3-container admin"> -->
+			<!-- The administrator can change a user's password, but the user ID -->
+			<!-- is set in stone, so not editable here. -->
+<!-- 		</section> -->
+		
+	</section>
+
+	<!--/*/ <th:block th:include="fragments/footer :: footer"></th:block> /*/-->
+
+<script th:src="@{/js/footable/footable.min.js}"></script>
+
+<script th:src="@{/js/myfootable.js}"></script>
+
+<script th:inline="javascript">
+/*<![CDATA[*/
+
+	function openWorkSection(sectionId) {
+		 var i; // iterator
+		 var adminElements = document.getElementsByClassName("admin");
+		 var elementsLen = adminElements.length;
+		 		 
+console.log("!!!!! In openWorkSection for " + sectionId);
+		 for (i = 0; i < elementsLen; i++) {
+			 adminElements[i].style.display = "none";  
+		 }
+		 
+		 document.getElementById(sectionId).style.display = "block";  		 
+	}
+
+	/* Toggle between adding and removing the "responsive" class to the nav menu
+	when the user clicks on the icon */
+	function mxcOnResponsiveMenuClick() {
+		$("nav ul").toggleClass("responsive");
+	   // document.getElementsByClassName("mxcMenu")[0].classList.toggle("responsive");
+	}
+	
+	function setUpLecturersTable() {
+		
+		var lecturerList = /*[[${lecturers}]]*/ null;
+        console.log("Lecturer list is " + lecturerList); 
+        
+	   	 $( "#datePicker" ).datepicker({
+	   		 dateFormat: 'dd M yy',
+   	      changeMonth: true,//this option for allowing user to select month
+   	      changeYear: true, //this option for allowing user to select from year range
+   	    });
+ 
+		mxcfoo.setUpTable("#lecturersTable", lecturerList);
+	}
+	
+(function() { // Begin scoping function
+	
+	// This variable allows us to keep track of the selected item, which Datatables
+	// discards on redraw. Note that, since these views are master-detail, we are
+	// implementing single selection only.
+	var selectedIdx = "";  // Nothing selected at first
+	
+	$(document).ready(function() {
+		
+		// We want to toggle the active one for every menu element EXCEPT
+		// the hamburger (and 'home', which goes to another page)
+		//$( "nav ul li a.mxcMenuItem" ).on( "click", function() {
+		$( ".mxcMenuItem" ).on( "click", function() {
+			$("nav ul li a.active").toggleClass("active");
+			  $( this ).toggleClass( "active" );
+			  // save the id of the link so that we can reopen at the last saved 
+			  // menu option if user revisits page
+			  sessionStorage.mxcCampusLastVisitedTab = $(this).attr('id');
+		});
+		
+		if ( typeof(Storage) !== "undefined" && sessionStorage.mxcCampusLastVisitedTab ) {
+			document.getElementById(sessionStorage.mxcCampusLastVisitedTab).click();
+		} else {
+			// On page load, open to the students view, as this is where most of the
+			// admin's work is done.
+			openWorkSection("students");			
+		}
+		
+		
+		// Initialise the editing dialog.
+//   		$("#editDialog").dialog({autoOpen : false, modal : true, title : "Edit user", 
+//   			show : "blind", hide : "blind"});
+
+		// Set up table for students.
+		setUpStudentsTable("#studentsTable");
+		
+		setUpLecturersTable();
+
+	} );
+  
+
+	function getTableFooter(dataColumns) {
+		var i = 0; // iterator
+		var len = dataColumns.length;
+		var htmlStr = "<tfoot><tr>";
+		
+		for (i = 0; i < len; i++) {
+			console.log("SEARCH? " + dataColumns[i].searchable);
+		
+			if ( dataColumns[i].searchable === undefined || dataColumns[i].searchable ) {
+				var title = dataColumns[i].title;
+				var thContent = "<input type='text' placeholder='Search " + title + "' />";
+				htmlStr = htmlStr.concat("<th>",thContent,"</th>");
+			} else {
+				htmlStr = htmlStr.concat("<th></th>");
+			}
+		}
+		htmlStr = htmlStr.concat("</tr></tfoot>");
+		
+		return htmlStr;
+	}
+	
+	
+	function setUpStudentsTable(tableSelector) {
+		var i = 0; // iterator
+		var table;
+	
+		// The columns that the table will display of the incoming data, with
+		// titles provided for the table header.
+		var dataColumns = [
+{data : null, title : "", orderable: false, searchable: false, defaultContent: "<button>View</button>"},
+	    	       { data: "lastName", title: "Last Name"},
+				{ data: "firstName", title: "First Name" },
+		    	 { data: "userId", title: "Id" },
+		    	 { data: "amountPaid", title: "AUD Paid"},
+		    	        	{ data: "external", title: "External?" }
+		                   ];
+		
+		// Multi-column search setup - add the table footer and a text input to each footer cell
+		var htmlStr = getTableFooter(dataColumns);
+				
+		$(tableSelector).append(htmlStr);
+		
+		// Add the edit button at the end of each row.
+		//dataColumns.push({data : null, title : "", targets: -1, orderable: false, searchable: false, defaultContent: "<button>Edit</button>"}); 
+		//dataColumns.unshift({data : null, title : "", targets: -1, orderable: false, defaultContent: "<button>Edit</button>"}); 
+    		
+		// Set up your JQuery Datatable.
+		table = $(tableSelector).DataTable( {
+	        	"columns": dataColumns,
+			 	"dom": "lrtip",  // display everything except the default search box
+			 	"orderClasses": false, // don't highlight ordered column (interferes with selection)
+			 	"order": [[ 1, "asc" ]], // by default the second column is sorted
+		        "serverSide": true,
+		        "processing": true,
+		        "ajax": {
+		            url: "/students/getPagedStudents",
+		            type: "POST",
+		            beforeSend: function (request) {
+		                request.setRequestHeader("X-CSRF-TOKEN", /*[[${_csrf.token}]]*/ null);
+		            },
+		            contentType: "application/json",
+		            data: function( args ) {
+		            	return JSON.stringify(args);
+		            }
+		        }
+		    } );
+		
+	    // Apply the search
+	    table.columns().every( function () {
+	        var that = this;
+	 
+	        $( "input", this.footer() ).on( "keyup change", function () {
+	            if ( that.search() !== this.value ) {
+	                that.search( this.value ).draw();
+	            }
+	        } );
+	    } );
+	    
+	    // Apply each row's edit button. Second argument says that the event should
+	    // only be attached to the "button" selector child elements.
+	       $(tableSelector + " tbody").on( "click", "button", function (event) {
+				var tr = $(this).parents("tr")[0];
+				var rowData;
+				// If the control is sitting inside a previously collapsed detail row, it will have
+				// class of "child", and we actually need the next tr up (use jQuery).
+				if ( $(tr).hasClass("child") ) {
+					tr = $(tr).prev();
+				}
+				
+				rowData = table.row( tr ).data();
+
+				window.location = "/student/" + rowData.id;
+	    	   
+    	    return false;
+    } );
+	    
+	}
+
+})();         // End scoping function
+
+/*]]>*/
+</script>
+</body>
+
+</html>
