@@ -150,6 +150,10 @@ Further tests will be added, in particular unit tests for the service layer.
 - Admin form for changing a person's password needs to be updated so that the admin doesn't have
 to supply the old password.
 - Need "home" and "public" icons on main banner for authorised users.
+- Do a search for console.log(...) as this will crash any attempts to run in IE.
+- Check for XSS attacks. Thymeleaf is supposed to escape all HTML by default, but a) I want to test this; 
+b) there might be a vulnerability in the admin view where Javascript is being used to generate the
+table footer.
 - Fix up the layouts, including on error, starting with the student view/form and password change form.
 - Get money serialisation working as formatted strings, but so that Javascript has access to numeric values too.
 - Create student.
