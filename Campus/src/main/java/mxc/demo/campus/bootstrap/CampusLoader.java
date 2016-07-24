@@ -165,7 +165,7 @@ public class CampusLoader implements ApplicationListener<ContextRefreshedEvent>{
 				, createCourse("English 2", createMoney(190))
 				, createCourse("English 3", createMoney(200))
 				, createCourse("Mandarin Chinese 1", createMoney(190))
-				, createCourse("Archeology 1", createMoney(250))
+				, createCourse("Archaeology 1", createMoney(250))
 				, createCourse("Chemistry 1", createMoney(250))
 				, createCourse("Geology 1", createMoney(240))
 		};

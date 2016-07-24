@@ -88,7 +88,7 @@
 	<h3>Enrolled courses</h3>
 	
 	<ul th:each="course: ${student.courses}">
-		<li><span th:text="${course.name}"></span>: <span th:text="${'$' + course.cost}"></span></li>
+		<li class="mxcEnrolledCourse"><span th:text="${course.name}" class="mxcEnrolledCourseName"></span>: <span th:text="${'$' + course.cost}"></span></li>
 	</ul>
 	
 	</section>
