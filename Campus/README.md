@@ -85,7 +85,7 @@ This should be disabled for a production environment.
 
   All these questions and more need to be considered before designing any front-end application.
 
-- Another issue is where and how users and admins should change passwords. In the end, I conceded to the _KISS_ principle -- there is now a _Change password_ button on the student view page, which takes users to a separate page.
+- Another issue is where and how users and admins should change passwords. In the end, I yielded to the _KISS_ principle -- there is now a _Change password_ button on the student view page, which takes users to a separate page.
 
   I experimented with a slide-out toggle (_Change password_, _Dont' change password_) on the editing form that produced a mini-editor, thus requiring one less trip to the server. However, I found that this only increased complexity and was less intuitive. I wouldn't rule the idea out altogether; there might exist third-party software to accomplish this in a better way. 
 
