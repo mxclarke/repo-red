@@ -85,7 +85,7 @@ This should be disabled for a production environment.
 
   All these questions and more need to be considered before designing any front-end application.
 
-- Another issue is where and how users and admins should change passwords. In the end, I yielded to the _KISS_ principle -- there is now a _Change password_ button on the student view page, which takes users to a separate page.
+- Another issue is where and how users and admins should change passwords. In the end, I opted for simplicity, and there is now a _Change password_ button on the student view page, which takes users to a separate page.
 
   I experimented with a slide-out toggle (_Change password_, _Dont' change password_) on the editing form that produced a mini-editor, thus requiring one less trip to the server. However, I found that this only increased complexity and was less intuitive. I wouldn't rule the idea out altogether; there might exist third-party software to accomplish this in a better way. 
 
@@ -153,7 +153,8 @@ to supply the old password.
 - Do a search for console.log(...) as this will crash any attempts to run in IE.
 - Check for XSS attacks. Thymeleaf is supposed to escape all HTML by default, but a) I want to test this; 
 b) there might be a vulnerability in the admin view where Javascript is being used to generate the
-table footer.
+table footer (search expressions aren't saved but I want to check whether they're relayed back to the user and
+the potential impact).
 - Fix up the layouts, including on error, starting with the student view/form and password change form.
 - Get money serialisation working as formatted strings, but so that Javascript has access to numeric values too.
 - Create student.
