@@ -165,7 +165,6 @@
 		 var adminElements = document.getElementsByClassName("admin");
 		 var elementsLen = adminElements.length;
 		 		 
-console.log("!!!!! In openWorkSection for " + sectionId);
 		 for (i = 0; i < elementsLen; i++) {
 			 adminElements[i].style.display = "none";  
 		 }
@@ -183,7 +182,6 @@ console.log("!!!!! In openWorkSection for " + sectionId);
 	function setUpLecturersTable() {
 		
 		var lecturerList = /*[[${lecturers}]]*/ null;
-        console.log("Lecturer list is " + lecturerList); 
         
 	   	 $( "#datePicker" ).datepicker({
 	   		 dateFormat: 'dd M yy',
@@ -240,9 +238,7 @@ console.log("!!!!! In openWorkSection for " + sectionId);
 		var len = dataColumns.length;
 		var htmlStr = "<tfoot><tr>";
 		
-		for (i = 0; i < len; i++) {
-			console.log("SEARCH? " + dataColumns[i].searchable);
-		
+		for (i = 0; i < len; i++) {		
 			if ( dataColumns[i].searchable === undefined || dataColumns[i].searchable ) {
 				var title = dataColumns[i].title;
 				var thContent = "<input type='text' placeholder='Search " + title + "' />";
