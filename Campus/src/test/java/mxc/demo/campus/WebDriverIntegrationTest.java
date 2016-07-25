@@ -33,6 +33,8 @@ import mxc.demo.campus.domain.UserRole;
 
 /**
  * Functional tests using Selenium.
+ * @deprecated
+ * @see CampusTestSuite
  * 
  * NOTE: this test only works because I had to remove Selenium from test scope in the pom, 
  * i.e. since Firefox updated to version 47. The FF update required an update of Selenium 

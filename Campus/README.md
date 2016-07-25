@@ -141,7 +141,9 @@ the exception of the administrator, usernames and passwords are constructed usin
 
 An automated test suite (JUnit) is under development as mxc.demo.campus.CampusTestSuite.
 
-The test suite includes integration tests (Selenium Web Driver). In particular, these assess the security concerns of the application.
+The test suite includes some unit tests and integration tests (Selenium Web Driver). In particular, these assess the security concerns of the application.
+
+The Selenium tests work with Firefox. Other browsers are available, but it is necessary to download bridging drivers for these. I have implemented the same tests for Chrome, and these can be found in the ChromeIntegrationTestSuite. You will need to [set things up](https://sites.google.com/a/chromium.org/chromedriver/getting-started) on your own machine if you wish to run ChromeIntegrationTestSuite.
 
 Further tests will be added, in particular unit tests for the service layer.
 
@@ -169,10 +171,10 @@ in StudentsController, since the alternative means putting the onus on the clien
 supply those fields (e.g. as hidden inputs).
 - Consider how to integrate client-side with server-side validation seamlessly.
 - Add student enrolment date.
-- Get Selenium tests working again, i.e. issues with latest Firefox requiring Selenium update caused dependency incompatibilities.
-For Chrome and IE, it seems that you need to download drivers and set these up in the tests. For FIrefox, the quick fix
+- Get Selenium tests working again, i.e. issues with latest Firefox requiring Selenium update caused dependency incompatibilities. For FIrefox, the quick fix
 is that you change Selenium's Maven scope to the default. However, this is hardly ideal and I would like to fix it
 properly.
+- ~~Demonstrate setting up Selenium tests with more than one driver, e.g. Chrome.~~
 - Get Thymeleaf to strip comments from HTML and CSS. Minification and concatenation of Javascript files and stylesheets, or at least include documentation here as to how it's done.
 - Complete documentation.
 - Sticky "save" button on longer forms, or else divide editing forms into smaller steps.
