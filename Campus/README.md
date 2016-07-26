@@ -120,13 +120,23 @@ If DTOs are sometimes, often or always necessary, there are ways to reduce their
 
 # Setting up and Running
 
-Since this is a Maven project, it should only be necessary to:
+If you are an Eclipse user it is likely that you will need to modify your eclipse.ini file thanks to QueryDSL. To do this, check the path of your JDK and add something like this to your eclipse.ini:
+
+```
+-vm 
+C:\Program Files\Java\jdk1.8.0_77\bin\javaw.exe
+```
+
+The -vm option must occur before the -vmargs option. Once you have done this, restart Eclipse.
+
+Since this is a Maven project, it should then only be necessary to:
 
 - generate a Maven update and build
 - run mxc.demo.campus.CampusApplication as a Java application
 - browse to http://localhost:8080
 
-This will take you to the public page. A button enabling users to sign in is available on the banner.
+This will take you to the application's public page. A button enabling users to sign in is available on the banner.
+
 To log in as an administrator, you need to provide the following credentials:
 
 - username = __adminUser__
